@@ -1,0 +1,2 @@
+class Travelmode < ApplicationRecord
+end

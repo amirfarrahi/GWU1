@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Traffic Game</title>
+    
+    
+    <link rel="stylesheet" href="css/reset.css">
+
+    <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+
+        <link rel="stylesheet" href="css/style.css">
+
+    
+    
+    
+  </head>
+
+  <body>
+
+    
+<!-- Form Mixin-->
+<!-- Input Mixin-->
+<!-- Button Mixin-->
+<!-- Pen Title-->
+<div class="pen-title">
+</div>
+<!-- Form Module-->
+<div class="module form-module">
+  <div class="toggle"><i class="fa fa-times fa-pencil"></i>
+    <div class="tooltip">Click Me</div>
+  </div>
+  <div class="form">
+    <h2>Login to your account</h2>
+    <form id="lo-form">
+      <input id="lo-email" type="text" placeholder="Email" required/>
+      <span id="err" ></span>
+      <input id="lo-pass" type="password" placeholder="Password" required/>
+      <button id="login" type="button">Login</button>
+    </form>
+  </div>
+  <div class="form">
+    <h2>Create an account</h2>
+    <form id="re-form">
+      <input id="username" type="text" placeholder="Username" required/>
+      <span id="re-err" ></span>
+      <input id="password" type="password" placeholder="Password" required/>
+      <input id="email" type="email" placeholder="Email Address" required/>
+      <button id="register" type="button">Register</button>
+    </form>
+  </div>
+ 
+</div>
+    <script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+
+
+        <script src="js/index.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function () {
+        	
+     	  $('#login').click( function () {
+             if($('#lo-form')[0].checkValidity()){
+                $.ajax({
+                   url: 'http://localhost:3000/authenticate',
+                   dataType: 'json',
+		   async : false,
+                   type: 'POST',
+                   contentType: 'application/json; charset=utf-8',
+                   data: JSON.stringify({ "email": $('#lo-email').val(), "password": $('#lo-pass').val() }) 
+                }).done(function(msg) {
+                 //  alert(JSON.stringify(msg));
+                    //  if (msg.success) $("#err").text("user/password incorrect");
+                      if (msg.success==true) { window.location = 'main.html';
+                      										localStorage.setItem('userinfo', msg);					
+                      																				}
+    		   })
+                  .fail(function(msg) {
+                      $("#err").text("internal server error");
+                    
+                  });
+             }           
+
+          });
+
+            $('#register').click( function () {
+
+
+
+              if($('#re-form')[0].checkValidity()){
+                
+                $.ajax({
+                   url: 'http://localhost:3000/users',
+                   dataType: 'json',
+		   async : false,
+                   type: 'POST',
+                   contentType: 'application/json; charset=utf-8',
+                   data: JSON.stringify({ "name":$('#username').val() ,"email": $('#email').val(), "password": $('#password').val(), 
+                   "password_confirmation": $('#password').val() }) 
+                }).done(function(msg) {
+                $("#re-err").text("user created.Please login in");
+                //    localStorage['username'] = $('#username').val();
+               //     window.location = 'main.html';
+                 })
+                  .fail(function(msg) {
+                  //   if (msg.status==500) 
+                     $("#re-err").text("internal server error");
+                  //   alert(msg.responseText[0]);
+                 //     alert(msg.status);
+                    
+                  });
+               } 
+
+
+          });
+         
+
+        });
+       
+        </script>
+
+    
+    
+    
+  </body>
+</html>

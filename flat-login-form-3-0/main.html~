@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="amir farrahi" >
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/style.css">
+  
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+  
+  </head>
+
+  <body>
+
+    
+   
+  
+    <div class="container">
+      <div class="row">
+<div class="span4"><span class="label label-success">User Name: </span>
+<span id="username" ></span>
+</div> 
+<div class="span4"><span class="label label-default">Condition: </span>
+<span id="condition" >normal</span>
+</div> 
+<div class="span4"><span class="label label-default">Budget: </span>
+<span id="budget" >500$</span>
+</div> 
+    </div>
+        <div class="top-buffer row">
+<div class="span4"><span class="label label-info">Origin: </span>
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select
+    <span class="caret"></span></button>
+    <ul id="srcmenu" class="dropdown-menu" role="menu" >
+    
+    </ul>
+    </div>
+</div> 
+<div class="span4"><span class="label label-info">Destination: </span>
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
+    <span class="caret"></span></button>
+    <ul id="desmenu" class="dropdown-menu" role="menu" >
+     
+    </ul>
+    </div>
+</div> 
+<div class="span4"><span class="label label-info">Condition: </span>
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
+    <span class="caret"></span></button>
+    <ul id="desmenu" class="dropdown-menu" role="menu" >
+    <li role='presentation'><a href='#' role='menuitem' tabindex='-1'>normal</a></li>
+        <li role='presentation'><a href='#' role='menuitem' tabindex='-1'>accident</a></li>
+            <li role='presentation'><a href='#' role='menuitem' tabindex='-1'>bad weather</a></li>
+
+     
+    </ul>
+    </div>
+</div>
+ 
+    </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+        </div>
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn" href="#">View details &raquo;</a></p>
+       </div>
+        <div class="span4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a id="test" class="btn" >View detailsfggg &raquo;</a></p>
+        </div>
+      </div>
+
+
+
+
+        
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+    <script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+  <script src="js/bootstrap.min.js"></script>
+      <script>
+    $( document ).ready(function() {
+    var uinfo=localStorage.getItem('userinfo');
+    var myObject = JSON.parse(uinfo);
+     $("#username").text(myObject.name);
+  //  alert(JSON.stringify(uinfo));
+   // alert(myObject.auth_token);
+         $.ajax({
+                   url: 'http://localhost:3000/nodes',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+              //   alert(JSON.stringify(msg));
+              $.each(data, function(index) {
+         $('#srcmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ data[index].name+ "</a></li>");
+         $('#desmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ data[index].name+ "</a></li>");
+
+             });
+                 })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });
+        
+
+$("#test").click(function() {
+//$('#srcmenu').append("<li role='presentation'><a role='menuitem' tabindex='-1' 
+//href='#'>HTML</a></li>");
+$('#srcmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'> hi</a></li>");
+});
+
+
+    });  
+  
+    </script>    
+  </body>
+</html>
