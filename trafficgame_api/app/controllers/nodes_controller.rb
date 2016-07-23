@@ -4,7 +4,6 @@ class NodesController < ApplicationController
   # GET /nodes
   def index
     @nodes = Node.all
-
     render json: @nodes
   end
 

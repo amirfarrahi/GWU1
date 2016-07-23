@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160709163226) do
+ActiveRecord::Schema.define(version: 20160721000254) do
 
   create_table "answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_id"
@@ -31,6 +31,23 @@ ActiveRecord::Schema.define(version: 20160709163226) do
     t.string   "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "games", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "condition_id"
+    t.integer  "travel_mod"
+    t.integer  "user_id"
+    t.integer  "status"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.integer  "origin"
+    t.integer  "destination"
+    t.float    "budget",           limit: 24
+    t.float    "travel_time",      limit: 24
+    t.text     "current_loc_type", limit: 65535
+    t.integer  "location_id"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   create_table "nodes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

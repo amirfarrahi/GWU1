@@ -1,5 +1,6 @@
 class ConditionsController < ApplicationController
   before_action :set_condition, only: [:show, :update, :destroy]
+  skip_before_action :authenticate_request, only: [:create]
 
   # GET /conditions
   def index

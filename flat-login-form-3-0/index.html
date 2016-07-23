@@ -69,7 +69,7 @@
                    contentType: 'application/json; charset=utf-8',
                    data: JSON.stringify({ "email": $('#lo-email').val(), "password": $('#lo-pass').val() }) 
                 }).done(function(msg) {
-                 //  alert(JSON.stringify(msg));
+                   alert(JSON.stringify(msg));
                     //  if (msg.success) $("#err").text("user/password incorrect");
                       if (msg.success==true) { window.location = 'main.html';
                       										localStorage.setItem('userinfo', JSON.stringify(msg));					

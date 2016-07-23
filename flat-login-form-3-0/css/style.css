@@ -6,6 +6,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.map {
+        height: 500px;
+      }
+
 
 /* Pen Title */
 .pen-title {
@@ -141,3 +145,13 @@ body {
   color: #333333;
   text-decoration: none;
 }
+
+
+ html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+
+

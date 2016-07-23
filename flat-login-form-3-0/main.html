@@ -8,7 +8,8 @@
     <meta name="author" content="amir farrahi" >
 
     <!-- Le styles -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
      <link rel="stylesheet" href="css/style.css">
   
 
@@ -24,61 +25,68 @@
 
   <body>
 
-    
-   
+
   
     <div class="container">
-      <div class="row">
-<div class="span4"><span class="label label-success">User Name: </span>
+    <div class="row">
+    
+    
+    
+<div class="col-md-4"><span class="label label-success">User Name:</span>
 <span id="username" ></span>
 </div> 
-<div class="span4"><span class="label label-default">Condition: </span>
-<span id="condition" >normal</span>
+<div class="col-md-4"><span class="label label-default"> Condition:</span>  &nbsp;&nbsp;
+<div class="dropdown">
+    <button id="conbtn" class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
+    <span class="caret"></span></button>
+    <ul id="conmenu" class="dropdown-menu" role="menu" >
+    </ul>
+</div>
 </div> 
-<div class="span4"><span class="label label-default">Budget: </span>
-<span id="budget" >500$</span>
+<div class="col-md-4"><span class="label label-default">Budget:</span>
+<span id="budget" ><strong>500$</strong></span>
 </div> 
     </div>
         <div class="top-buffer row">
-<div class="span4"><span class="label label-info">Origin: </span>
+<div class="col-md-4"><span class="label label-info">Origin:</span>
   <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select
+    <button id="srcbtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select
     <span class="caret"></span></button>
     <ul id="srcmenu" class="dropdown-menu" role="menu" >
-    
     </ul>
     </div>
 </div> 
-<div class="span4"><span class="label label-info">Destination: </span>
+<div class="col-md-4"><span class="label label-info">Destination:</span>
   <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
+    <button id="desbtn" class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
     <span class="caret"></span></button>
     <ul id="desmenu" class="dropdown-menu" role="menu" >
-     
     </ul>
     </div>
 </div> 
+<div class="col-md-4"><span class="label label-info">Travel Time:</span>
+<span id="budget" ><strong>20 minutes</strong></span>
+</div> 
+</div>
+<div class="top-buffer row">
+<div  class="col-md-4">
+<span class="label label-success">Travel Mode:</span>
+<div id="tmbtn" class="btn-group" role="group">
+  <button data-tmid="1" id="car" type="button" class="btn btn-default">car</button>
+  <button data-tmid="2" id="bike" type="button" class="btn btn-default">bike</button>
+  <button data-tmid="3" id="pb" type="button" class="btn btn-default">public transport</button>
+</div>
+</div>
+<div>
+<button id="startbtn" class="btn btn-default" type="button" >Start the game</button>
+</div>
+</div>
 
-    </div>
+<div class="top-buffer row">
+<div id="gmap" class="col-md-12 map"></div>
+</div>
 
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a id="test" class="btn" >View detailsfggg &raquo;</a></p>
-        </div>
-      </div>
+
 
 
 
@@ -92,13 +100,37 @@
     <!-- Placed at the end of the document so the pages load faster -->
 
 
-    <script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
-  <script src="js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
+    async defer></script>
+    <script src="https://cdn.rawgit.com/googlemaps/v3-utility-library/master/markerwithlabel/src/markerwithlabel.js"></script>
+
       <script>
+      
+  var map;
+var myLatlng;
+var srcmyLatlng;
+var desmyLatlng;
+var desmarker;
+var srcmarker;
+var conditionid,tm;
+var startnode,endnode,currnode;
+      function initMap() {
+        myLatlng = new google.maps.LatLng(38.9072, -77.0369);
+        map = new google.maps.Map(document.getElementById('gmap'), {
+          center: myLatlng,
+          zoom: 4
+        });
+      }
+
     $( document ).ready(function() {
+    $("#startbtn").prop("disabled",false);
     var uinfo=localStorage.getItem('userinfo');
     var myObject = JSON.parse(uinfo);
      $("#username").text(myObject.name);
+     
+   //  $("#gmap").load("map.html"); 
   //  alert(JSON.stringify(uinfo));
    // alert(myObject.auth_token);
          $.ajax({
@@ -110,10 +142,13 @@
                    contentType: 'application/json; charset=utf-8'
                
                 }).done(function(data) {
-              //   alert(JSON.stringify(msg));
+
               $.each(data, function(index) {
-         $('#srcmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ data[index].name+ "</a></li>");
-         $('#desmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ data[index].name+ "</a></li>");
+          var   elem="<li " + "data-name='" + data[index].name + "' data-lat='" + data[index].lat + "' data-lon='" +data[index].lon + "' role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ 
+         data[index].name+ "</a></li>";
+//alert(elem);
+         $('#desmenu').append(elem);
+         $('#srcmenu').append(elem);
 
              });
                  })
@@ -121,16 +156,112 @@
                   alert("failed");
                              
                   });
-        
+                  
+         $.ajax({
+                   url: 'http://localhost:3000/conditions',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
 
-$("#test").click(function() {
-//$('#srcmenu').append("<li role='presentation'><a role='menuitem' tabindex='-1' 
-//href='#'>HTML</a></li>");
-$('#srcmenu').append("<li role='presentation'><a href='#' role='menuitem' tabindex='-1'> hi</a></li>");
+
+              $.each(data, function(index) {
+          var   elem="<li " + "value='" + data[index].id + "' role='presentation'><a href='#' role='menuitem' tabindex='-1'>" 
+         + data[index].name+ "</a></li>";
+       //   alert(elem);
+         $('#conmenu').append(elem);
+         
+               });
+             
+                 })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });                  
+                  
+       
+        $('#startbtn').click(function() {
+               $("#startbtn").prop("disabled",true);
+               currnode=startnode;
+          //     alert(conditionid + ',' + startnode+ ',' + endnode+ ',' + tm+ ',' + currnode);
+/*  
+                   $.ajax({
+                   url: 'http://localhost:3000/games',
+                   dataType: 'json',
+		   async : false,
+                   type: 'POST',
+                   contentType: 'application/json; charset=utf-8',
+                   data: JSON.stringify({ "condition_id": conditionid,"travel_mo":tm,"status":0,"origin":startnode,
+                   "destination":endnode,"current_loc_type":"N","location_id":curr_node }) 
+                }).done(function(msg) {
+                   alert(JSON.stringify(msg));
+                   
+    		   })
+                  .fail(function(msg) {
+                   alert("error");
+                    
+                  });
+
+               :budget, :travel_time, user startdate,end_date 
+*/     
+       });       
+                  
+       $('#desmenu li').click(function() {
+       if (desmarker!=null) desmarker.setMap(null);
+
+          var lat=parseFloat(this.getAttribute("data-lat"));
+          var lon=parseFloat(this.getAttribute("data-lon"));
+
+          desmyLatlng = new google.maps.LatLng(lat,lon);
+          desmarker = new google.maps.Marker({
+          position: desmyLatlng,
+          title:this.getAttribute("data-name"),
+          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + this.getAttribute("data-name") + '|FF0000|000000'
+       
+          });
+          desmarker.setMap(map); 
+          $("#desbtn").text(this.getAttribute("data-name")); 
+          endnode=this.getAttribute("data-name");
+       });
+       
+       $('#srcmenu li').click(function() {
+       if (srcmarker!=null) srcmarker.setMap(null);
+
+          var lat=parseFloat(this.getAttribute("data-lat"));
+          var lon=parseFloat(this.getAttribute("data-lon"));
+
+          srcmyLatlng = new google.maps.LatLng(lat,lon);
+          srcmarker = new google.maps.Marker({
+          position: srcmyLatlng,
+          title:this.getAttribute("data-name"),
+          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + this.getAttribute("data-name") + '|FF0000|000000'
+          });
+          srcmarker.setMap(map);  
+          $("#srcbtn").text(this.getAttribute("data-name"));
+          startnode=this.getAttribute("data-name");
+       });
+      
+       $('#conmenu li').click(function() {
+
+        $("#conbtn").text($(this).text());
+       conditionid=$(this).attr('value');
+       });
+       
+
+       $("#tmbtn button").click(function() {
+          tm=this.getAttribute("data-tmid") ;    
+       //    alert(tm); // points to the clicked input button
+       });
+        
+        
+          
+ 
 });
 
-
-    });  
+     
   
     </script>    
   </body>
