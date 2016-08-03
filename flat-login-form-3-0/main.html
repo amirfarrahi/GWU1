@@ -32,10 +32,10 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
     
     
     
-<div class="col-md-4"><span class="label label-success">User Name:</span>
+<div class="col-md-3"><span class="label label-success">User Name:</span>
 <span id="username" ></span>
 </div> 
-<div class="col-md-4"><span class="label label-default"> Condition:</span>  &nbsp;&nbsp;
+<div class="col-md-3"><span class="label label-default"> Condition:</span>  &nbsp;&nbsp;
 <div class="dropdown">
     <button id="conbtn" class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
     <span class="caret"></span></button>
@@ -43,30 +43,38 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
     </ul>
 </div>
 </div> 
-<div class="col-md-4"><span class="label label-default">Budget:</span>
-<span id="budget" ><strong>500$</strong></span>
+<div class="col-md-3"><span class="label label-default">Budget:</span>
+<span id="budget" ><strong></strong></span>
 </div> 
+<div class="col-md-3"><span class="label label-default">Cost:</span>
+<span id="cost" ><strong></strong></span>
+</div>
     </div>
         <div class="top-buffer row">
-<div class="col-md-4"><span class="label label-info">Origin:</span>
+<div class="col-md-3"><span class="label label-info">Origin:</span>
   <div class="dropdown">
     <button id="srcbtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select
     <span class="caret"></span></button>
-    <ul id="srcmenu" class="dropdown-menu" role="menu" >
+    <ul id="srcmenu" class="dropdown-menu scrollable-menu" role="menu" >
     </ul>
     </div>
 </div> 
-<div class="col-md-4"><span class="label label-info">Destination:</span>
+<div class="col-md-3"><span class="label label-info">Destination:</span>
   <div class="dropdown">
     <button id="desbtn" class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
     <span class="caret"></span></button>
-    <ul id="desmenu" class="dropdown-menu" role="menu" >
+    <ul id="desmenu" class="dropdown-menu scrollable-menu" role="menu" >
     </ul>
     </div>
 </div> 
-<div class="col-md-4"><span class="label label-info">Travel Time:</span>
-<span id="budget" ><strong>20 minutes</strong></span>
+<div class="col-md-3"><span class="label label-info">Travel Time:</span>
+<span id="traveltime" ><strong></strong></span>
 </div> 
+<div class="col-md-3">
+
+</div> 
+
+
 </div>
 <div class="top-buffer row">
 <div  class="col-md-4">
@@ -77,13 +85,54 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
   <button data-tmid="3" id="pb" type="button" class="btn btn-default">public transport</button>
 </div>
 </div>
-<div>
-<button id="startbtn" class="btn btn-default" type="button" >Start the game</button>
+<div class="col-md-4">
+<button id="startbtn" class="btn btn-default" type="button" >Go!</button>
+</div>
+<div class="col-md-4">
+
+
+
+
+
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" data-whatever="@mdo">Open modal for @mdo</button>
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+
+
+          </button>
+          <h4 class="modal-title" id="QuestionLabel"></h4>
+        </div>
+        <div class="modal-body">
+          <form>
+             <div id="answergrp" class="form-group">
+
+
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+        <p id="prompterr" class="text-left"></p>
+          <button id="answerbtn" type="button" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
 </div>
 </div>
 
 <div class="top-buffer row">
 <div id="gmap" class="col-md-12 map"></div>
+<div id="animation" class="col-md-12 hidden"><img id="ride" class="center-block" src="" ></div>
 </div>
 
 
@@ -115,17 +164,36 @@ var desmyLatlng;
 var desmarker;
 var srcmarker;
 var conditionid,tm;
+var gameid=-1;
+var qid=-1;
+var anid=-1;
+var antext="";
+var antype="";
+var budget=400;
+var cost=0;
+var traveltime=0;
+var index=0;
+var nextnode;
 var startnode,endnode,currnode;
+var directionsService;
+var directionsDisplay;
       function initMap() {
         myLatlng = new google.maps.LatLng(38.9072, -77.0369);
         map = new google.maps.Map(document.getElementById('gmap'), {
           center: myLatlng,
           zoom: 4
         });
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer();
+
+        
       }
 
     $( document ).ready(function() {
-    $("#startbtn").prop("disabled",false);
+    $("#budget").text(budget+ ' $');
+   // $("#traveltime").text(traveltime+ ' minutes');    
+    
+    $("#startbtn").prop("disabled",true);
     var uinfo=localStorage.getItem('userinfo');
     var myObject = JSON.parse(uinfo);
      $("#username").text(myObject.name);
@@ -183,30 +251,84 @@ var startnode,endnode,currnode;
                   });                  
                   
        
+       $('#myModal').on('hidden.bs.modal', function () {
+
+        $(this).removeData();
+    //     alert("hi");
+})
+
         $('#startbtn').click(function() {
-               $("#startbtn").prop("disabled",true);
-               currnode=startnode;
-          //     alert(conditionid + ',' + startnode+ ',' + endnode+ ',' + tm+ ',' + currnode);
-/*  
+
+              $("#startbtn").prop("disabled",true);
+              $("#QuestionLabel").text("");
+              $("#prompterr").text("");
+              budget=budget-cost;
+              $("#budget").text(budget+ ' $');
+              $("#gmap").addClass('hidden');
+              $("#animation").removeClass('hidden');
+                 
+
+             $("#answergrp").empty();
+             //  currnode=startnode;
+            //   alert(conditionid + ',' + startnode+ ',' + endnode+ ',' + tm+ ',' + currnode);
+              if (index==0) {
+                   $("#srcbtn").prop("disabled",true);
+                   $("#desbtn").prop("disabled",true);
+                   $("#conbtn").prop("disabled",true);
+                   //conbtn
                    $.ajax({
                    url: 'http://localhost:3000/games',
                    dataType: 'json',
-		   async : false,
+		             async : false,
                    type: 'POST',
                    contentType: 'application/json; charset=utf-8',
-                   data: JSON.stringify({ "condition_id": conditionid,"travel_mo":tm,"status":0,"origin":startnode,
-                   "destination":endnode,"current_loc_type":"N","location_id":curr_node }) 
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   data: JSON.stringify({ "condition_id": conditionid,"travel_mod":tm,"status":0,"origin":startnode,
+                   "destination":endnode,"current_loc_type":"N","location_id":currnode , "budget": budget,"travel_time": traveltime }) 
                 }).done(function(msg) {
-                   alert(JSON.stringify(msg));
+             //   alert(JSON.stringify(msg));
+                // alert(msg.id);
+                   gameid=msg.id;
+                   index=index+1;
+                   currnode=nextnode;
                    
     		   })
                   .fail(function(msg) {
                    alert("error");
                     
                   });
+                  };
+                  currnode=nextnode;
+                           $.ajax({
+                   url: 'http://localhost:3000/nodequestion/' + currnode  ,
+                   dataType: 'json',
+		             async : false,
+                   type: 'GET',
+                   contentType: 'application/json; charset=utf-8',
+                   headers: { 'Authorization' : myObject.auth_token       }
 
-               :budget, :travel_time, user startdate,end_date 
-*/     
+                  
+
+                }).done(function(msg) {
+             //   $('#myModal').modal()                      // initialized with defaults
+          //   alert(msg.question[0].name);
+                    qid=msg.question[0].id;
+                    $("#QuestionLabel").text(msg.question[0].name);
+                    antype=msg.question[0].answer_type; 
+                    if (msg.question[0].answer_type=="T") $("#answergrp").append("<textarea class='form-control' id='message-text'></textarea>");
+                    if (msg.question[0].answer_type=="M") 
+                  $.each(msg.answer, function(index) {
+               $("#answergrp").append("<div class='radio'><label><input type='radio' name='optradio' value='" + msg.answer[index].id+ "'>" + msg.answer[index].answer + "</label></div>");
+           //    alert(msg.answer[index].id);
+               });
+          //      "<div class='radio'><label><input type='radio' value='" + + "'>" + + "</label></div>"
+                 
+                   
+    		   })
+                  .fail(function(msg) {
+                   alert("error");
+                    
+                  });
        });       
                   
        $('#desmenu li').click(function() {
@@ -242,6 +364,7 @@ var startnode,endnode,currnode;
           srcmarker.setMap(map);  
           $("#srcbtn").text(this.getAttribute("data-name"));
           startnode=this.getAttribute("data-name");
+          currnode=startnode;
        });
       
        $('#conmenu li').click(function() {
@@ -250,11 +373,125 @@ var startnode,endnode,currnode;
        conditionid=$(this).attr('value');
        });
        
+       
 
+     
+
+
+         
+  
+         
        $("#tmbtn button").click(function() {
-          tm=this.getAttribute("data-tmid") ;    
-       //    alert(tm); // points to the clicked input button
+          
+          
+          tm=this.getAttribute("data-tmid") ;  
+
+           if (tm==1) gtm=google.maps.DirectionsTravelMode.DRIVING;
+           if (tm==2) gtm=google.maps.DirectionsTravelMode.BICYCLING;
+           if (tm==3) gtm=google.maps.DirectionsTravelMode.TRANSIT;
+        //   alert(startnode);
+        //   alert (currnode);
+                  $.ajax({
+                   url: 'http://localhost:3000/getroute',
+                   dataType: 'json',
+		             async : false,
+                   type: 'POST',
+                   contentType: 'application/json; charset=utf-8',
+                   data: JSON.stringify({ "condition_id": conditionid,"travel_mod":tm,"status":0,"origin":currnode,
+                   "destination":endnode,"current_loc_type":"N","location_id":currnode  }),
+                   headers: { 'Authorization' : myObject.auth_token       } 
+          }).done(function(msg) {
+                 //  alert(JSON.stringify(msg));
+                    var start,end;
+                    var lat,lon;
+                    var waypts=[];
+                    $("#traveltime").text('');
+                    if (msg.traveltime!=null) {
+                      traveltime=msg.traveltime;
+                      $("#traveltime").text(traveltime+ ' minutes');
+                    }
+                    $("#cost").text('');
+                    if (msg.cost!=null) { 
+                      cost=msg.cost;
+                      $("#cost").text(cost+ ' $');
+                    }
+                    if (msg.wp.length!=0) { 
+                    		$("#startbtn").prop("disabled",false);
+                    		nextnode=msg.wp[1].name
+                    }
+                    else $("#startbtn").prop("disabled",true);
+                    for (var i = 0; i < msg.wp.length; i++){
+                      lat=msg.wp[i].location[0];
+                      lon=msg.wp[i].location[1];
+                      var gpoint=new google.maps.LatLng(lat, lon);
+
+                      waypts.push({location:gpoint,stopover:false}); 
+                   //   lat=msg.wp(i).location;
+                   //   alert(lat);
+                      if (i==0)               start = new google.maps.LatLng(lat, lon);
+                      if (i==msg.wp.length-1) end = new google.maps.LatLng(lat, lon);
+                    }
+              //      alert(JSON.stringify(msg.wp));
+
+                   
+						directionsDisplay.setDirections({routes: []});
+
+                
+                   calculateAndDisplayRoute(directionsService,directionsDisplay,start,end,waypts,gtm);
+                   
+    		 })
+          .fail(function(msg) {
+                    alert("fail");
+          });
+       
+       
        });
+       
+       
+       function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,mywaypoints,travel_mode) {
+         directionsDisplay.setMap(map);
+         directionsService.route({
+         origin: pointA,
+         destination: pointB,
+         waypoints:mywaypoints,
+         travelMode: travel_mode //google.maps.TravelMode.DRIVING
+         }, function(response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+              } /*else {
+              window.alert('Directions request failed due to ' + status);
+              }*/
+           });
+      }       
+       
+        
+       $('#answerbtn').click(function() {
+        if ( antype=="M") { antext=""; 
+                              anid=$('input[name=optradio]:checked', '#answergrp').val();
+                              if ( typeof anid == 'undefined' ) 
+                              anid=-1;         
+          }
+          if ( antype=="T") { anid=-1; antext=$("#message-text").val().trim();}
+          if (anid==-1 && antext=="") {$("#prompterr").text("please answer");}
+          else {$('#myModal').modal('toggle');}  
+              $.ajax({
+                   url: 'http://localhost:3000/userfeeds',
+                   dataType: 'json',
+		             async : false,
+                   type: 'POST',
+                   contentType: 'application/json; charset=utf-8',
+                   data: JSON.stringify({ "game_id": gameid, "question_id": qid,"answer_id":anid ,"usert":antext}),
+                   headers: { 'Authorization' : myObject.auth_token       } 
+          }).done(function(msg) {
+                    alert(JSON.stringify(msg));
+                   
+    		 })
+          .fail(function(msg) {
+                    alert(JSON.stringify(msg));
+          });
+      
+
+      });
         
         
           

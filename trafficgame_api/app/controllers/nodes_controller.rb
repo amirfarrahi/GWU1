@@ -1,5 +1,19 @@
 class NodesController < ApplicationController
-  before_action :set_node, only: [:show, :update, :destroy]
+  before_action :set_node, only: [:show, :update, :destroyi,:get_nodequestion]
+
+
+  def get_nodequestion
+
+#   puts question.answer.find(
+    q= @node.question.all
+ #  puts q.inspect
+    q_id=q.first
+#   puts q_id
+    a=Answer.where(question_id:q_id)
+
+    render json:  { "question": q, "answer":a},:status=>200
+
+   end
 
   # GET /nodes
   def index
@@ -9,6 +23,7 @@ class NodesController < ApplicationController
 
   # GET /nodes/1
   def show
+    puts "this one"
     render json: @node
   end
 
@@ -45,6 +60,6 @@ class NodesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def node_params
-      params.require(:node).permit(:name, :desc, :lat, :lon)
+      params.require(:node).permit(:name, :desc, :lat, :lon,)
     end
 end

@@ -12,6 +12,8 @@ require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
+#require 'neo4j/railtie'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -27,5 +29,7 @@ module TrafficgameApi
     # Skip views, helpers and assets when generating a new resource.
     config.autoload_paths << Rails.root.join('lib')
     config.api_only = true
+    config.neo4jurl = 'http://localhost:7474/db/data/transaction/commit'
+    config.neo4jauth = 'Basic bmVvNGo6YWJjZGVmZw=='
   end
 end

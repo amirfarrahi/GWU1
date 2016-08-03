@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :edgemeta
+  resources :userfeeds
   resources :games
   resources :answers
   resources :questions
@@ -8,6 +10,7 @@ Rails.application.routes.draw do
   resources :nodes
   resources :users
   post 'authenticate', to: 'authentication#authenticate'
-#  get  'route', to 'games#routeinfo'
+  post  'getroute', to: 'games#getroute'
+  get  '/nodequestion/:id', to: 'nodes#get_nodequestion'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

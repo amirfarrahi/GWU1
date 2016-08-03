@@ -1,0 +1,2 @@
+class Edgemetum < ApplicationRecord
+end
