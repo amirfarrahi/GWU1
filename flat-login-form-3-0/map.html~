@@ -58,7 +58,7 @@
                        title:userslocations[index].name,
                        icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + userslocations[index].name + '|FF0000|000000'
                        });
-                       desmarker.setMap(map);
+                       desmarker.setMap(desmarker);
                   });
                 })
                   .fail(function(msg) {

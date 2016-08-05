@@ -93,8 +93,9 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 
 
 
-
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" data-whatever="@mdo">Open modal for @mdo</button>
+  <button id="showusers" type="button" class="btn btn-primary">players location</button>
+<div id='somediv'></div>
+  <button id="qprompt" type="button" class="btn btn-primary hidden" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" data-whatever="@mdo">Open modal for @mdo</button>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -260,15 +261,13 @@ var directionsDisplay;
         $('#startbtn').click(function() {
 
               $("#startbtn").prop("disabled",true);
-              $("#QuestionLabel").text("");
-              $("#prompterr").text("");
+            
+
               budget=budget-cost;
               $("#budget").text(budget+ ' $');
               $("#gmap").addClass('hidden');
-              
+              $("#animation").removeClass('hidden');
                  
-
-             $("#answergrp").empty();
              //  currnode=startnode;
             //   alert(conditionid + ',' + startnode+ ',' + endnode+ ',' + tm+ ',' + currnode);
               if (index==0) {
@@ -290,7 +289,7 @@ var directionsDisplay;
                 // alert(msg.id);
                    gameid=msg.id;
                    index=index+1;
-                   currnode=nextnode;
+
                    
     		   })
                   .fail(function(msg) {
@@ -299,36 +298,8 @@ var directionsDisplay;
                   });
                   };
                   currnode=nextnode;
-                           $.ajax({
-                   url: 'http://localhost:3000/nodequestion/' + currnode  ,
-                   dataType: 'json',
-		             async : false,
-                   type: 'GET',
-                   contentType: 'application/json; charset=utf-8',
-                   headers: { 'Authorization' : myObject.auth_token       }
-
-                  
-
-                }).done(function(msg) {
-             //   $('#myModal').modal()                      // initialized with defaults
-          //   alert(msg.question[0].name);
-                    qid=msg.question[0].id;
-                    $("#QuestionLabel").text(msg.question[0].name);
-                    antype=msg.question[0].answer_type; 
-                    if (msg.question[0].answer_type=="T") $("#answergrp").append("<textarea class='form-control' id='message-text'></textarea>");
-                    if (msg.question[0].answer_type=="M") 
-                  $.each(msg.answer, function(index) {
-               $("#answergrp").append("<div class='radio'><label><input type='radio' name='optradio' value='" + msg.answer[index].id+ "'>" + msg.answer[index].answer + "</label></div>");
-           //    alert(msg.answer[index].id);
-               });
-          //      "<div class='radio'><label><input type='radio' value='" + + "'>" + + "</label></div>"
-                 
-                   
-    		   })
-                  .fail(function(msg) {
-                   alert("error");
-                    
-                  });
+                  setTimeout(revert, 3000);
+                          
        });       
                   
        $('#desmenu li').click(function() {
@@ -373,11 +344,71 @@ var directionsDisplay;
        conditionid=$(this).attr('value');
        });
        
+
+       $('#showusers').click(function() {
+          window.open('map.html', 'window name', 'window settings'); 
+       });
        
 
      
 
+        function revert(){
+             
+             $("#gmap").removeClass('hidden');
+             $("#animation").addClass('hidden');
+             $("#QuestionLabel").text("");
+             $("#prompterr").text("");
+             $("#answergrp").empty();
+             qid=-1;
+              $.ajax({
+                   url: 'http://localhost:3000/nodequestion/' + currnode  ,
+                   dataType: 'json',
+		             async : false,
+                   type: 'GET',
+                   contentType: 'application/json; charset=utf-8',
+                   headers: { 'Authorization' : myObject.auth_token       }
+                }).done(function(msg) {
+                    if (msg.question.length>0) {
+                      qid=msg.question[0].id;
+                      $("#QuestionLabel").text(msg.question[0].name);
+                      antype=msg.question[0].answer_type; 
+                      if (msg.question[0].answer_type=="T") $("#answergrp").append("<textarea class='form-control' id='message-text'></textarea>");
+                      if (msg.question[0].answer_type=="M") 
+                      $.each(msg.answer, function(index) {
+                        $("#answergrp").append("<div class='radio'><label><input type='radio' name='optradio' value='" + msg.answer[index].id+ "'>" + msg.answer[index].answer + "</label></div>");
+                      });
+                   }
+    		   })
+                  .fail(function(msg) {
+                   alert("error");
+                  });
+                  var status=0;
+                  if (nextnode==endnode) status=1;      
+                  $.ajax({
+                     url: 'http://localhost:3000/games/'+ gameid,
+                     dataType: 'json',
+		               async : false,
+                     type: 'PUT',
+                     contentType: 'application/json; charset=utf-8',
+                     headers: { 'Authorization' : myObject.auth_token ,  "X-HTTP-Method-Override": "PUT"    },
+                     data: JSON.stringify({ "location_id": currnode ,"status": status}) 
+                  }).done(function(msg) {
+              //       alert(JSON.stringify(msg));
+    		         })
+                  .fail(function(msg) {
+                      alert("error");
+                  });
 
+                  
+            if (qid!=-1) $("#qprompt").click();
+            if (nextnode==endnode) {
+              $('#ride').attr("src",'img/gameover.jpg');
+               $("#gmap").addClass('hidden');
+               $("#animation").removeClass('hidden');
+               $("#tmbtn button").prop("disabled",true);
+                          
+            }
+        }
          
   
          
@@ -386,9 +417,15 @@ var directionsDisplay;
           
           tm=this.getAttribute("data-tmid") ;  
 
-           if (tm==1) gtm=google.maps.DirectionsTravelMode.DRIVING;
-           if (tm==2) gtm=google.maps.DirectionsTravelMode.BICYCLING;
-           if (tm==3) gtm=google.maps.DirectionsTravelMode.TRANSIT;
+           if (tm==1) { gtm=google.maps.DirectionsTravelMode.DRIVING;
+                        $('#ride').attr("src",'img/car.gif');
+           }
+           if (tm==2) { gtm=google.maps.DirectionsTravelMode.BICYCLING;
+           					$('#ride').attr("src",'img/bike.jpg');
+           }
+           if (tm==3) { gtm=google.maps.DirectionsTravelMode.TRANSIT;
+                        $('#ride').attr("src",'img/bus.gif');           
+           }
         //   alert(startnode);
         //   alert (currnode);
                   $.ajax({
@@ -401,7 +438,7 @@ var directionsDisplay;
                    "destination":endnode,"current_loc_type":"N","location_id":currnode  }),
                    headers: { 'Authorization' : myObject.auth_token       } 
           }).done(function(msg) {
-                 //  alert(JSON.stringify(msg));
+                //   alert(JSON.stringify(msg));
                     var start,end;
                     var lat,lon;
                     var waypts=[];
@@ -417,27 +454,20 @@ var directionsDisplay;
                     }
                     if (msg.wp.length!=0) { 
                     		$("#startbtn").prop("disabled",false);
-                    		nextnode=msg.wp[1].name
+                    		nextnode=msg.wp[1].name;
+                    		for (var i = 0; i < msg.wp.length; i++){
+                          lat=msg.wp[i].location[0];
+                          lon=msg.wp[i].location[1];
+                          var gpoint=new google.maps.LatLng(lat, lon);
+                          waypts.push({location:gpoint,stopover:false}); 
+                          if (i==0)               start = new google.maps.LatLng(lat, lon);
+                          if (i==msg.wp.length-1) end = new google.maps.LatLng(lat, lon);
+                        }
+                        directionsDisplay.setDirections({routes: []});
+                        calculateAndDisplayRoute(directionsService,directionsDisplay,start,end,waypts,gtm);
                     }
                     else $("#startbtn").prop("disabled",true);
-                    for (var i = 0; i < msg.wp.length; i++){
-                      lat=msg.wp[i].location[0];
-                      lon=msg.wp[i].location[1];
-                      var gpoint=new google.maps.LatLng(lat, lon);
-
-                      waypts.push({location:gpoint,stopover:false}); 
-                   //   lat=msg.wp(i).location;
-                   //   alert(lat);
-                      if (i==0)               start = new google.maps.LatLng(lat, lon);
-                      if (i==msg.wp.length-1) end = new google.maps.LatLng(lat, lon);
-                    }
-              //      alert(JSON.stringify(msg.wp));
-
-                   
-						directionsDisplay.setDirections({routes: []});
-
-                
-                   calculateAndDisplayRoute(directionsService,directionsDisplay,start,end,waypts,gtm);
+             
                    
     		 })
           .fail(function(msg) {
@@ -472,7 +502,9 @@ var directionsDisplay;
                               anid=-1;         
           }
           if ( antype=="T") { anid=-1; antext=$("#message-text").val().trim();}
-          if (anid==-1 && antext=="") {$("#prompterr").text("please answer");}
+          if (anid==-1 && antext=="") {$("#prompterr").text("please answer");
+            return;          
+          }
           else {$('#myModal').modal('toggle');}  
               $.ajax({
                    url: 'http://localhost:3000/userfeeds',
@@ -483,7 +515,7 @@ var directionsDisplay;
                    data: JSON.stringify({ "game_id": gameid, "question_id": qid,"answer_id":anid ,"usert":antext}),
                    headers: { 'Authorization' : myObject.auth_token       } 
           }).done(function(msg) {
-                    alert(JSON.stringify(msg));
+                 //   alert(JSON.stringify(msg));
                    
     		 })
           .fail(function(msg) {

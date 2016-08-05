@@ -11,6 +11,21 @@ class GamesController < ApplicationController
 
   # GET /games/1
   
+  def getusersloc
+    locids=Game.select('user_id,location_id').where(status:0,current_loc_type:'N')
+    usersloc=[]   
+    puts locids.inspect
+    locids.each do |item|
+      user=User.find(item.user_id)
+      puts user.name
+      node=Node.find(item.location_id)
+      usersloc.push({
+              location: [node.lat, node.lon] ,
+              name: user.name
+            })
+    end 
+    render :json=> { :usersloc=>usersloc }, :status=>200    
+  end
   def getroute
     puts "I am here"
     @game = Game.new(game_params)
@@ -32,7 +47,7 @@ class GamesController < ApplicationController
     data= {
   "statements": [
     {
-      "statement": "MATCH (from:Location { L_ID:"+ @game.origin.to_s + " }), (to:Location { L_ID:" + @game.destination.to_s + "}) , path = (from)-[:" +nq_tm + "*]->(to)\nRETURN path AS shortestPath,\n    reduce(distance = 0, r in relationships(path) | distance+r.distance) AS totalDistance\n    ORDER BY totalDistance ASC\n    LIMIT 1",
+      "statement": "MATCH (from:Location { L_ID:"+ @game.origin.to_s + " }), (to:Location { L_ID:" + @game.destination.to_s + "}) , path =shortestPath( (from)-[:" +nq_tm + "*]->(to))\nRETURN path AS shortestPath,\n    reduce(distance = 0, r in relationships(path) | distance+r.distance) AS totalDistance\n    ORDER BY totalDistance ASC\n    LIMIT 1",
       "resultDataContents": [
         "row",
         "graph"
