@@ -14,15 +14,19 @@
         height: 100%;
       }
     </style>
+<script>    if (sessionStorage.getItem('userinfo') == null) {
+        window.location.replace("login.html");
+       };
+</script>
   </head>
   <body>
     <div id="map"></div>
     <div id="capture"></div>
      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
     async defer></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="https://cdn.rawgit.com/googlemaps/v3-utility-library/master/markerwithlabel/src/markerwithlabel.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/markerwithlabel.js"></script>
 
     <script>
       var map;
@@ -35,7 +39,7 @@
       
       $(document).ready(function() {
       
-        var uinfo=localStorage.getItem('userinfo');
+        var uinfo=sessionStorage.getItem('userinfo');
         var myObject = JSON.parse(uinfo);
 
          $.ajax({

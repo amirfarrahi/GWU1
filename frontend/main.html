@@ -11,6 +11,10 @@
 <link rel="stylesheet" href="css/bootstrap.min.css" 
 integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
      <link rel="stylesheet" href="css/style.css">
+<script>    if (sessionStorage.getItem('userinfo') == null) {
+        window.location.replace("login.html");
+       };
+</script>
   
 
 
@@ -157,7 +161,7 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
     <script src="js/markerwithlabel.js"></script>
 
       <script>
-      
+    
   var map;
 var myLatlng;
 var srcmyLatlng;
@@ -190,12 +194,16 @@ var directionsDisplay;
         
       }
 
+  
+
     $( document ).ready(function() {
+
+       
     $("#budget").text(budget+ ' $');
    // $("#traveltime").text(traveltime+ ' minutes');    
     
     $("#startbtn").prop("disabled",true);
-    var uinfo=localStorage.getItem('userinfo');
+    var uinfo=sessionStorage.getItem('userinfo');
     var myObject = JSON.parse(uinfo);
      $("#username").text(myObject.name);
      

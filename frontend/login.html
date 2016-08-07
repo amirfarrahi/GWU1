@@ -72,7 +72,7 @@
               //     alert(JSON.stringify(msg));
                     //  if (msg.success) $("#err").text("user/password incorrect");
                       if (msg.success==true) { window.location = 'main.html';
-                      										localStorage.setItem('userinfo', JSON.stringify(msg));					
+                      										sessionStorage.setItem('userinfo', JSON.stringify(msg));					
                       																				}
     		   })
                   .fail(function(msg) {
