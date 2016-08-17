@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160730165023) do
+ActiveRecord::Schema.define(version: 20160814010909) do
 
   create_table "answers", primary_key: ["id", "question_id"], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "id",                        null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20160730165023) do
     t.string   "desc"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "status"
   end
 
   create_table "edgemeta", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 20160730165023) do
     t.float    "cost",         limit: 24
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.integer  "acc_ind"
   end
 
   create_table "edges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

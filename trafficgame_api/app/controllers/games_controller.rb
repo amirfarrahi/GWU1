@@ -95,7 +95,7 @@ class GamesController < ApplicationController
      
     end
     cost=10
-    render :json=> {:cost=>cost, :wp=>waypoints, :traveltime=>5 }, :status=>200
+    render :json=> {:cost=>cost, :wp=>waypoints, :traveltime=>5,:comingedge=>-1,    :accind=>0 }, :status=>200
     
   end
 

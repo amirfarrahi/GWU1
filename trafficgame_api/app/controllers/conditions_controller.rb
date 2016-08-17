@@ -3,9 +3,16 @@ class ConditionsController < ApplicationController
   skip_before_action :authenticate_request, only: [:create]
 
   # GET /conditions
+  def activeconditions
+    @conditions = Condition.where(status:1)
+
+    render json: @conditions
+
+  end
+
   def index
     @conditions = Condition.all
-
+     
     render json: @conditions
   end
 
@@ -27,6 +34,9 @@ class ConditionsController < ApplicationController
 
   # PATCH/PUT /conditions/1
   def update
+    Condition.update_all(status: 0)
+
+
     if @condition.update(condition_params)
       render json: @condition
     else
@@ -47,6 +57,6 @@ class ConditionsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def condition_params
-      params.require(:condition).permit(:name, :desc)
+      params.require(:condition).permit(:name, :desc,:status)
     end
 end
