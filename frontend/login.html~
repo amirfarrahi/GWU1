@@ -62,7 +62,7 @@
      	  $('#login').click( function () {
              if($('#lo-form')[0].checkValidity()){
                 $.ajax({
-                   url: 'http://localhost:3000/authenticate',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/authenticate',
                    dataType: 'json',
 		   async : false,
                    type: 'POST',
@@ -93,7 +93,7 @@
               if($('#re-form')[0].checkValidity()){
                 
                 $.ajax({
-                   url: 'http://localhost:3000/users',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/users',
                    dataType: 'json',
 		   async : false,
                    type: 'POST',
@@ -106,6 +106,7 @@
                //     window.location = 'main.html';
                  })
                   .fail(function(msg) {
+                  alert(JSON.stringify(msg));
                   //   if (msg.status==500) 
                      $("#re-err").text("internal server error");
                   //   alert(msg.responseText[0]);
