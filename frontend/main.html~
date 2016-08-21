@@ -327,7 +327,7 @@ var trafficflag;
                   var timediffinmin=hhdiff+mindiff;
                //   alert (timediffinmin);
                   delay=timediffinmin-traveltime;
-                  if (delay<0) $("#trafficnews").text(delay*-1 + ' min delay / loosing ' + (delay*-1/60*hr).toFixed(2)+'$');
+                  if (delay<0) $("#trafficnews").text((delay*-1).toFixed(2) + ' min delay / loosing ' + (delay*-1/60*hr).toFixed(2)+'$');
                
                };
               setTimeout(revert, 5000);
@@ -420,6 +420,7 @@ var trafficflag;
 
           srcmyLatlng = new google.maps.LatLng(lat,lon);
           start = srcmyLatlng;
+          alert(start.lat());
           srcmarker = new google.maps.Marker({
           position: srcmyLatlng,
           title:this.getAttribute("data-name"),
@@ -466,6 +467,23 @@ var trafficflag;
              if(polyline!= null)  polyline.setMap(null);
              if(trafficpolyline!= null)  trafficpolyline.setMap(null);
             calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
+               $.ajax({
+                  url: 'http://localhost:3000/updateuserloc',
+                     dataType: 'json',
+		               async : false,
+                     type: 'PUT',
+                     contentType: 'application/json; charset=utf-8',
+                     headers: { 'Authorization' : myObject.auth_token ,  "X-HTTP-Method-Override": "PUT"    },
+                     data: JSON.stringify({ "lat": 1,"lon":1}) 
+          }).done(function(msg) {
+                 //  alert( JSON.stringify(msg));
+               
+                   
+    		 })
+          .fail(function(msg) {
+                    alert("fail");
+          });  
+          
                      //          
           //   if (c==0) start=test1;
           //   if (c==1) start=test2;

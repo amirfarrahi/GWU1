@@ -17,5 +17,6 @@ Rails.application.routes.draw do
   get 'activeconditions', to:'conditions#activeconditions'
   put 'users',to:'users#update'
   get 'getuserhrrate',to:'users#gethrrate'
+  put 'updateuserloc',to:'userlocations#updateloc'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -20,10 +20,10 @@ class UsersController < ApplicationController
   end
   # POST /users
   def create
-    puts "here"
+    
     puts user_params
     @user = User.new(user_params)
-
+#    Userlocation.create(user_id: @user.id,lat:nil,lon:nil)
     if @user.save
       render json: @user, status: :created, location: @user
     else
@@ -33,9 +33,10 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-   puts "test" 
-   
-   @user=User.find(current_user.id)  
+    
+   @user=User.find(current_user.id)
+   Userlocation.create(user_id: @user.id,lat:nil,lon:nil)
+ 
     if @user.update(user_params)
       render json: @user
     else

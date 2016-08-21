@@ -7,7 +7,18 @@ class UserlocationsController < ApplicationController
 
     render json: @userlocations
   end
+  def updateloc
+   userloc = Userlocation.find_by(user_id: current_user.id)
+   puts userloc.inspect
+   userloc.update(lat: params[:lat],lon: params[:lon])
+   if userloc.save
+      render json: userloc, status: :created, location: userloc
+    else
+      render json: userloc.errors, status: :unprocessable_entity
+    end
 
+
+  end
   # GET /userlocations/1
   def show
     render json: @userlocation

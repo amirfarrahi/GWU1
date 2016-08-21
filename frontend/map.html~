@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+<script>    if (sessionStorage.getItem('userinfo') == null) {
+        window.location.replace("login.html");
+       };
+</script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="capture"></div>
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
+    async defer></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/markerwithlabel.js"></script>
+
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 38.8992646, lng: -77.1549962},
+          zoom: 11
+        });
+      }
+      
+      $(document).ready(function() {
+      
+        var uinfo=sessionStorage.getItem('userinfo');
+        var myObject = JSON.parse(uinfo);
+
+         $.ajax({
+                   url: 'http://localhost:3000/listuserloc',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+ //alert(JSON.stringify(data.usersloc[0]));
+                    var userslocations=data.usersloc;
+                  $.each(userslocations, function(index) {
+                       var lat=userslocations[index].location[0];
+                       var lon=userslocations[index].location[1];
+                       var desmyLatlng = new google.maps.LatLng(lat,lon);
+                       var desmarker = new google.maps.Marker({
+                       position: desmyLatlng,
+                       title:userslocations[index].name,
+                       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + userslocations[index].name + '|FF0000|000000'
+                       });
+                       desmarker.setMap(map);
+                  });
+                })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });   
+      });
+    </script>
+   
+    
+  </body>
+</html>

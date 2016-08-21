@@ -87,11 +87,11 @@
                   
          $('#submit').click(function() {
    
-            if ($('input[name=optradio]:checked').length!=13) 
+        /*    if ($('input[name=optradio]:checked').length!=13) 
                 {
                   alert('please answer all questions');
                   return;                
-                }; 
+                };*/ 
                  
             var hr=0;
             var salaryin=$('input[name=optradio]:checked', '#q4').val();
