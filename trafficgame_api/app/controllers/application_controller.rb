@@ -1,3 +1,4 @@
+require 'json_web_token'
 class ApplicationController < ActionController::API
  before_action :authenticate_request
 

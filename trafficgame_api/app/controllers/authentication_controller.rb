@@ -1,9 +1,10 @@
+require 'json_web_token'
 class AuthenticationController< ApplicationController
   skip_before_action :authenticate_request
 
   def authenticate
-     puts "secret key"
-     puts Rails.application.secrets.secret_key_base 
+#     puts "secret key"
+#     puts Rails.application.secrets.secret_key_base 
      user = User.find_by_email(params[:email])
 #     puts user.inspect
      return invalid_login_attempt unless user && user.authenticate(params[:password])
