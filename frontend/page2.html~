@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Question 2</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+ 
+<script>    if (sessionStorage.getItem('userinfo') == null) {
+        window.location.replace("login.html");
+       };
+</script>
+  </head>
+  <body>
+
+<div id="main">
+
+</div>
+
+         <div id="answergrp" class="form-group">
+
+
+            </div>
+            
+            <button type="button" class="btn btn-primary" id="submit">submit</button>
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
+    async defer></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/markerwithlabel.js"></script>
+
+    <script>
+      var scenario=-1;
+      
+      $(document).ready(function() {
+      
+     
+        var uinfo=sessionStorage.getItem('userinfo');
+        var myObject = JSON.parse(uinfo);
+
+         $.ajax({
+                   url: 'http://localhost:3000/questions',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+             //  alert(JSON.stringify(data));
+               
+                  $.each(data, function(index) {
+                  //  alert(data[index].id);
+                    if (data[index].id>=14)
+                    $("#main").append("<div class='form-group' id='q"+data[index].id + "'>" + data[index].id + "-"+ data[index].name +"</div></br>");
+                   // $("#answergrp").append("<div class='radio'><label><input type='radio' name='optradio' value='" + data[index].id+ "'>" + 
+                   // data[index].name + "</label></div>");
+                   // else  $("#answergrp").append("<div class='radio'><label><input checked type='radio' name='optradio' value='" + data[index].id+ "'>" + 
+                   // data[index].name + "</label></div>");
+                  });
+                })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });
+                  
+                   $.ajax({
+                   url: 'http://localhost:3000/answers',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+
+               
+                  $.each(data, function(index) {
+                //  alert(JSON.stringify(data[index]));
+                    if (data[index].question_id>=14)
+                    $("#q"+data[index].question_id).append("<div class='radio'><label><input type='radio' name='optradio' value='" + data[index].answer_id+ "'>" + 
+                    data[index].answer + "</label></div>");
+                  });
+                })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });                  
+                  
+                  
+         $('#submit').click(function() {
+         
+            
+       
+          window.location = 'login.html';
+       });                  
+                     
+      });
+    </script>
+   
+    
+  </body>
+</html>

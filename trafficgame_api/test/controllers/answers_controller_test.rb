@@ -12,7 +12,7 @@ class AnswersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create answer" do
     assert_difference('Answer.count') do
-      post answers_url, params: { answer: { question_id: @answer.question_id } }, as: :json
+      post answers_url, params: { answer: { answer: @answer.answer, answer_id: @answer.answer_id, question_id: @answer.question_id } }, as: :json
     end
 
     assert_response 201
@@ -24,7 +24,7 @@ class AnswersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update answer" do
-    patch answer_url(@answer), params: { answer: { question_id: @answer.question_id } }, as: :json
+    patch answer_url(@answer), params: { answer: { answer: @answer.answer, answer_id: @answer.answer_id, question_id: @answer.question_id } }, as: :json
     assert_response 200
   end
 

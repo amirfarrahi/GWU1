@@ -1,7 +1,9 @@
 class CreateAnswers < ActiveRecord::Migration[5.0]
   def change
     create_table :answers do |t|
-      t.belongs_to :question, index: true
+      t.integer :question_id
+      t.integer :answer_id
+      t.string :answer
 
       t.timestamps
     end

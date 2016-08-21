@@ -10,15 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160814010909) do
+ActiveRecord::Schema.define(version: 20160821040405) do
 
-  create_table "answers", primary_key: ["id", "question_id"], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "id",                        null: false
-    t.integer  "question_id",               null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.text     "answer",      limit: 65535
-    t.index ["question_id"], name: "index_answers_on_question_id", using: :btree
+  create_table "answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_id"
+    t.integer  "answer_id"
+    t.string   "answer"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "conditions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -125,12 +124,22 @@ ActiveRecord::Schema.define(version: 20160814010909) do
     t.text     "usert",       limit: 65535
   end
 
+  create_table "userlocations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.float    "lat",        limit: 24
+    t.float    "lon",        limit: 24
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.string   "email"
     t.string   "password_digest"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "loginbefore"
+    t.integer  "hrrate"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 

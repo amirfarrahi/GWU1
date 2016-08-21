@@ -61,7 +61,7 @@
          $('#submit').click(function() {
          
               scenario=$('input[name=optradio]:checked', '#answergrp').val();
-              alert (scenario);
+            //  alert (scenario);
          
               $.ajax({
                   url: 'http://localhost:3000/conditions/'+ scenario,

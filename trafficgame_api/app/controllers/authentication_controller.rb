@@ -5,7 +5,7 @@ class AuthenticationController< ApplicationController
      user = User.find_by_email(params[:email])
 #     puts user.inspect
      return invalid_login_attempt unless user && user.authenticate(params[:password])
-     render :json=> {:success=>true, :auth_token=>JsonWebToken.encode('user_id':user.id),:name=>user.name }
+     render :json=> {:auth_token=>JsonWebToken.encode('user_id':user.id),:name=>user.name,:loginbefore=>user.loginbefore },:status=>200
   end
 
   def invalid_login_attempt

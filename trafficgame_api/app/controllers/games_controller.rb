@@ -1,6 +1,30 @@
+require 'dijkstra'
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :update, :destroy]
-
+  before_action :loadroutes, only:[:getroute]
+  def loadroutes
+   drive=[[]]
+   @bike=[]
+   @pt=[]
+   tempd=Edge.select('startnode,endnode,distance').joins('inner join edgemeta on edges.id=edgemeta.edge_id where mode_id=1')
+   for item in tempd
+    temdr=[item.startnode,item.endnode,item.distance]
+    drive.push(temdr)
+   end
+   tempd=Edge.select('startnode,endnode,distance').joins('inner join edgemeta on edges.id=edgemeta.edge_id where mode_id=2')
+   for item in tempd
+    temdr=[item.startnode,item.endnode,item.distance]
+    @bike.push(temdr)
+   end
+   tempd=Edge.select('startnode,endnode,distance').joins('inner join edgemeta on edges.id=edgemeta.edge_id where mode_id=3')
+   for item in tempd
+    temdr=[item.startnode,item.endnode,item.distance]
+    @pt.push(temdr)
+   end
+   ob = Dijkstra.new(1, 4, drive)
+   puts "wwwwwwwwwwwwwwwwwwwwwwwwww"
+   puts ob.shortest_path
+  end
 
   # GET /games
   def index

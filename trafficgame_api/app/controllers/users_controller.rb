@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :destroy]
   skip_before_action :authenticate_request, only: [:create]
-  wrap_parameters :user, include: [:name,:email, :password]
+  wrap_parameters :user, include: [:name,:email, :password,:loginbefore,:hrrate]
   rescue_from ::Exception, with: :error_occurred
   # GET /users
   def index
@@ -14,7 +14,10 @@ class UsersController < ApplicationController
   def show
     render json: @user
   end
-
+  def gethrrate
+    hr=current_user.hrrate
+    render json: {hrrate: hr}, status: 200
+  end
   # POST /users
   def create
     puts "here"
@@ -30,6 +33,9 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
+   puts "test" 
+   
+   @user=User.find(current_user.id)  
     if @user.update(user_params)
       render json: @user
     else
@@ -51,7 +57,7 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :password, :password_confirmation,:loginbefore,:hrrate)
     end
 
     def error_occurred(exception)

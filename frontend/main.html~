@@ -125,7 +125,18 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 
 </div>
 </div>
-
+<div class="top-buffer row">
+<div class="col-md-6">
+  <div id="routegrp" class="form-group hidden">
+  </div>
+</div>
+<div class="col-md-6">
+<form id="myform" class="hidden">
+<span class="label label-success">Work Star Time:</span>
+<input type="text" id="worktime" placeholder="hh:mm:ss" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" >
+</form>
+</div>
+</div>
 <div class="top-buffer row">
 <div id="gmap" class="col-md-12 map"></div>
 <div id="animation" class="col-md-12 hidden"><img id="ride" class="center-block" src="" ></div>
@@ -154,9 +165,13 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
       <script>
     
 var map;
+var hr=0;
+var worktime;
+var start;
+var polyline,trafficpolyline;
 var myLatlng;
-var srcmyLatlng;
-var desmyLatlng;
+var srcmyLatlng=-1;
+var desmyLatlng=-1;
 var desmarker;
 var srcmarker;
 var conditionid,tm;
@@ -166,26 +181,37 @@ var trafficnews="";
 var anid=-1;
 var antext="";
 var antype="";
-var budget=400;
+var budget=100;
 var cost=0;
 var traveltime=0;
 var index=0;
 var nextnode;
+var r1,r2;
+var gtm=-1;
 var tmimagelink;
 var acclink='img/accident.jpg';
 var startnode,endnode,currnode;
 var directionsService;
-var directionsDisplay;
+var directionsDisplay1,directionsDisplay2;
 var curredge=-1;
 var edgeaccind=-1;
+var temp;
+var delay=0;
+var trafficflag;
+
+
       function initMap() {
         myLatlng = new google.maps.LatLng(38.9072, -77.0369);
         map = new google.maps.Map(document.getElementById('gmap'), {
           center: myLatlng,
-          zoom: 4
+          zoom: 11
         });
         directionsService = new google.maps.DirectionsService;
         directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsDisplay1 = new google.maps.DirectionsRenderer();
+        directionsDisplay2 = new google.maps.DirectionsRenderer();
+        directionsDisplay1.setMap(map);
+        directionsDisplay2.setMap(map);
 
         
       }
@@ -194,15 +220,20 @@ var edgeaccind=-1;
 
     $( document ).ready(function() {
 
-       
+  
+    $("#routegrp").append("<div class='radio-inline'><label><input id='r1' type='radio' name='optradio' value='0'>option 1</label></div>");
+    $("#routegrp").append("<div class='radio-inline'><label><input id='r2' type='radio' name='optradio' value='1'>option 2</label></div>");
+           
     $("#budget").text(budget+ ' $');
     $("#trafficnews").text("no traffic news availible");
    // $("#traveltime").text(traveltime+ ' minutes');    
     
     $("#startbtn").prop("disabled",true);
     var uinfo=sessionStorage.getItem('userinfo');
+    sessionStorage.setItem('userinfo', uinfo);
     var myObject = JSON.parse(uinfo);
      $("#username").text(myObject.name);
+    // alert(myObject.hrrate);
      
    //  $("#gmap").load("map.html"); 
   //  alert(JSON.stringify(uinfo));
@@ -242,14 +273,9 @@ var edgeaccind=-1;
                 }).done(function(data) {
                    $("#contxt").text(data[0].name);
                    conditionid=data[0].id;
-/*
-              $.each(data, function(index) {
-          var   elem="<li " + "value='" + data[index].id + "' role='presentation'><a href='#' role='menuitem' tabindex='-1'>" 
-         + data[index].name+ "</a></li>";
-       //   alert(elem);
-         $('#conmenu').append(elem);
-         
-               });*/
+                   if (conditionid==5) $("#myform").removeClass('hidden');
+                  
+
              
                  })
                   .fail(function(msg) {
@@ -257,6 +283,24 @@ var edgeaccind=-1;
                              
                   });                  
                   
+                         $.ajax({
+                   url: 'http://localhost:3000/getuserhrrate',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+                   hr=data.hrrate; 
+                  // alert(hr);               
+
+             
+                 })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                  });   
        
        $('#myModal').on('hidden.bs.modal', function () {
 
@@ -265,18 +309,39 @@ var edgeaccind=-1;
 })
 
         $('#startbtn').click(function() {
+             
+
+      
 
               $("#startbtn").prop("disabled",true);
+              $("#gmap").addClass('hidden');
+              $("#animation").removeClass('hidden');
+              $('#ride').attr("src",tmimagelink);
+              $("#routegrp").addClass('hidden');
+               $("#tmbtn button").prop("disabled",true);
+               if (conditionid==5 && trafficflag ) {
+                  var sysdate=new Date()
+                  var pieces = worktime.trim().split(':')
+                  var hhdiff=(Number(pieces[0])-sysdate.getHours())*60;
+                  var mindiff=(Number(pieces[1])-sysdate.getMinutes());
+                  var timediffinmin=hhdiff+mindiff;
+               //   alert (timediffinmin);
+                  delay=timediffinmin-traveltime;
+                  if (delay<0) $("#trafficnews").text(delay*-1 + ' min delay / loosing ' + (delay*-1/60*hr).toFixed(2)+'$');
+               
+               };
+              setTimeout(revert, 5000);
+ 
             
 
-              budget=budget-cost;
-              $("#budget").text(budget+ ' $');
+          
+
             
-              if (index==0) {
+           /*   if (index==0) {
                    $("#srcbtn").prop("disabled",true);
                    $("#desbtn").prop("disabled",true);
                    $("#conbtn").prop("disabled",true);
-                   //conbtn
+                 
                    $.ajax({
                    url: 'http://localhost:3000/games',
                    dataType: 'json',
@@ -287,8 +352,6 @@ var edgeaccind=-1;
                    data: JSON.stringify({ "condition_id": conditionid,"travel_mod":tm,"status":0,"origin":startnode,
                    "destination":endnode,"current_loc_type":"N","location_id":currnode , "budget": budget,"travel_time": traveltime }) 
                 }).done(function(msg) {
-             //   alert(JSON.stringify(msg));
-                // alert(msg.id);
                    gameid=msg.id;
                    index=index+1;
     		       })
@@ -305,7 +368,7 @@ var edgeaccind=-1;
                      headers: { 'Authorization' : myObject.auth_token ,  "X-HTTP-Method-Override": "PUT"    },
                      data: JSON.stringify({ "location_id": curredge ,"current_loc_type":"E","status": status}) 
                   }).done(function(msg) {
-              //       alert(JSON.stringify(msg));
+
     		         })
                   .fail(function(msg) {
                       alert("error");
@@ -324,13 +387,15 @@ var edgeaccind=-1;
                     $("#trafficnews").text("Traffic ahead be patient");
                     setTimeout(accrevert,3000)
                   
-                  }
+                  } */
                           
        });       
                   
        $('#desmenu li').click(function() {
-       if (desmarker!=null) desmarker.setMap(null);
 
+
+          if (desmarker!=null) desmarker.setMap(null);
+          
           var lat=parseFloat(this.getAttribute("data-lat"));
           var lon=parseFloat(this.getAttribute("data-lon"));
 
@@ -347,12 +412,14 @@ var edgeaccind=-1;
        });
        
        $('#srcmenu li').click(function() {
+         
        if (srcmarker!=null) srcmarker.setMap(null);
 
           var lat=parseFloat(this.getAttribute("data-lat"));
           var lon=parseFloat(this.getAttribute("data-lon"));
 
           srcmyLatlng = new google.maps.LatLng(lat,lon);
+          start = srcmyLatlng;
           srcmarker = new google.maps.Marker({
           position: srcmyLatlng,
           title:this.getAttribute("data-name"),
@@ -372,16 +439,42 @@ var edgeaccind=-1;
        });
        
 
-        function accrevert(){
-          $('#ride').attr("src",tmimagelink);
-          setTimeout(revert, traveltime);        
+        function leave(){
+         
+         window.location='page2.html';
         };
 
         function revert(){
-             
+        
+             $("#startbtn").prop("disabled",false);
+         //    $("#trafficnews").text('');
              $("#gmap").removeClass('hidden');
              $("#animation").addClass('hidden');
-             $("#QuestionLabel").text("");
+             $("#routegrp").removeClass('hidden');
+             $("#tmbtn button").prop("disabled",false);
+             start=temp;
+             if (start==desmyLatlng) {
+              $('#ride').attr("src",'img/gameover.jpg');
+               $("#gmap").addClass('hidden');
+               $("#animation").removeClass('hidden');
+               $("#tmbtn button").prop("disabled",true);
+               $("#traveltime").text('');
+               $("#cost").text('');
+               setTimeout(leave, 2000);
+              }
+             
+             if(polyline!= null)  polyline.setMap(null);
+             if(trafficpolyline!= null)  trafficpolyline.setMap(null);
+            calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
+                     //          
+          //   if (c==0) start=test1;
+          //   if (c==1) start=test2;
+         //    $("#routegrp").addClass('hidden');
+               //  if(t1 != null)       t1.setMap(null);
+               //           if(t2 != null)        t2.setMap(null);
+          //   alert(("input[name='r2']:checked").val());
+           //  start=test1;
+          /*   $("#QuestionLabel").text("");
              $("#prompterr").text("");
              $("#answergrp").empty();
              qid=-1;
@@ -420,28 +513,51 @@ var edgeaccind=-1;
                      headers: { 'Authorization' : myObject.auth_token ,  "X-HTTP-Method-Override": "PUT"    },
                      data: JSON.stringify({ "location_id": currnode ,"status": status}) 
                   }).done(function(msg) {
-              //       alert(JSON.stringify(msg));
+                    alert(JSON.stringify(msg));
     		         })
                   .fail(function(msg) {
                       alert("error");
                   });
-
+*/
                   
-            if (qid!=-1) $("#qprompt").click();
+  /*          if (qid!=-1) $("#qprompt").click();
             if (nextnode==endnode) {
               $('#ride').attr("src",'img/gameover.jpg');
                $("#gmap").addClass('hidden');
                $("#animation").removeClass('hidden');
                $("#tmbtn button").prop("disabled",true);
                           
-            }
+            }*/
         }
          
   
          
        $("#tmbtn button").click(function() {
-          
-          
+       
+
+          if (($("#worktime").val().length==0) && conditionid==5 ) 
+          {alert('Enter your work start time');
+           return false;
+          };
+          if ((conditionid==5) && (!$("#worktime")[0].checkValidity())) {
+             alert('work start time is invalid');
+             return false;
+          }
+          if ( srcmyLatlng==-1 || desmyLatlng==-1) 
+          {          
+          alert('choose source and destination');
+
+          return false;
+          }
+          worktime=$("#worktime").val();
+          var b1 = document.getElementById("bike");
+          var b2 = document.getElementById("car");
+          var b3 = document.getElementById("pb");
+          b1.style.background = "white";            
+          b2.style.background = "white";            
+          b3.style.background = "white"; 
+          $("#routegrp").removeClass('hidden');
+          document.getElementById(this.id).style.background="olive";           
           tm=this.getAttribute("data-tmid") ;  
 
            if (tm==1) { gtm=google.maps.DirectionsTravelMode.DRIVING;
@@ -459,7 +575,7 @@ var edgeaccind=-1;
            }
         //   alert(startnode);
         //   alert (currnode);
-                  $.ajax({
+       /*           $.ajax({
                    url: 'http://localhost:3000/getroute',
                    dataType: 'json',
 		             async : false,
@@ -472,8 +588,9 @@ var edgeaccind=-1;
                 //   alert(JSON.stringify(msg));
                     var start,end;
                     var lat,lon;
-                    var waypts=[];
+                    
                     $("#traveltime").text('');
+                    $("#cost").text('');
                     if (msg.traveltime!=null) {
                       traveltime=msg.traveltime;
                       $("#traveltime").text(traveltime+ ' minutes');
@@ -499,10 +616,16 @@ var edgeaccind=-1;
                           waypts.push({location:gpoint,stopover:false}); 
                           if (i==0)               start = new google.maps.LatLng(lat, lon);
                           if (i==msg.wp.length-1) end = new google.maps.LatLng(lat, lon);
-                        }
-                        directionsDisplay.setDirections({routes: []});
-                        calculateAndDisplayRoute(directionsService,directionsDisplay,start,end,waypts,gtm);
-                    }
+                        } */
+                        var waypts=[];
+                        var end;
+                        desmyLatlng;
+                        
+                        end =desmyLatlng;
+                    //    start = srcmyLatlng;
+                 //      directionsDisplay1.setDirections({routes: []});
+                //       calculateAndDisplayRoute(directionsService,directionsDisplay1,start,end,waypts,gtm,1);
+                  /*  }
                     else $("#startbtn").prop("disabled",true);
              
                    
@@ -510,26 +633,185 @@ var edgeaccind=-1;
           .fail(function(msg) {
                     alert("fail");
           });
-       
+       */
        
        });
+        var t1,t2;
+       $(document).on('change', 'input:radio[id^="r"]', function (event) {
        
-       
-       function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,mywaypoints,travel_mode) {
-         directionsDisplay.setMap(map);
+         if ( srcmyLatlng==-1 || desmyLatlng==-1 || gtm==-1) 
+          {          
+          alert('choose source, destination and travel mode');
+          $("#r1").attr('checked', false);
+          $("#r2").attr('checked', false);
+          return false;
+          }
+  //  alert(gtm);
+                      //            if(t1 != null)       t1.setMap(null);
+        if(polyline!= null)  polyline.setMap(null);
+        if(trafficpolyline!= null)  trafficpolyline.setMap(null);
+   // map.removeOverlay(marker);
+        calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
+                     //          
+
+
+                          $("#startbtn").prop("disabled",false);
+                    //   if (Number(this.value)==1) {  
+
+                                //         start=test2;
+        //    calculateAndDisplayRoute(directionsService,directionsDisplay2,srcmyLatlng,desmyLatlng,waypts,gtm,Number(this.value));
+                       //    t1.setMap(null);
+
+        
+                 //         t2=new google.maps.DirectionsRenderer(r2); 
+                //    }
+                    
+                                          
+                 //     if (Number(this.value)==0) {  
+                                        //         t1.setMap(null);
+          
+                                                 //  start=test1;
+         //   calculateAndDisplayRoute(directionsService,directionsDisplay1,srcmyLatlng,desmyLatlng,waypts,gtm,Number(this.value));
+           
+                 //         t1=new google.maps.DirectionsRenderer(r1); 
+                 //   }
+        
+                
+        });  
+        
+        
+        
+         function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,travel_mode) 
+       {
+         $("#traveltime").text('');
+       //  $("#trafficnews").text('');
+         $("#cost").text(''); 
+         $("#budget").text(budget+ ' $');        
+         trafficflag=0;
          directionsService.route({
          origin: pointA,
          destination: pointB,
-         waypoints:mywaypoints,
+         provideRouteAlternatives:true,
+         travelMode: travel_mode //google.maps.TravelMode.DRIVING
+         }, function(response, status) {
+           if (status === google.maps.DirectionsStatus.OK) {
+            polyline = new google.maps.Polyline({
+           path: [],
+           strokeColor: '#0000FF',
+           strokeWeight: 3
+       });
+           trafficpolyline = new google.maps.Polyline({
+           path: [],
+           strokeColor: '#FF0000',
+           strokeWeight: 3
+       });       
+       
+       var c=$('input[name=optradio]:checked', '#routegrp').val();
+       var myRoute;
+       if ((response.routes.length==1) && (c==1))     $("#startbtn").prop("disabled",true);
+       else  $("#startbtn").prop("disabled",false);
+       if (response.routes.length>1) myRoute= response.routes[c].legs[0];
+       else myRoute= response.routes[0].legs[0];
+       if (myRoute.steps.length>1)
+       temp=myRoute.steps[1].start_point;
+       else temp=pointB;
+       
+    //   alert(temp);
+  
+                    
+      var bounds = new google.maps.LatLngBounds();
+      var tbounds = new google.maps.LatLngBounds();
+       var legs;
+
+
+      if (response.routes.length>1)      legs= response.routes[c].legs;
+      else legs= response.routes[0].legs;
+      var totalmilage=parseFloat(response.routes[c].legs[0].distance.text);
+      var durationinmin=response.routes[c].legs[0].duration.value/60;
+      cost=totalmilage*0.16 +14;
+      if (conditionid==4) cost=cost*0.5;
+      if (conditionid==2 || conditionid==4 ) durationinmin=durationinmin+totalmilage;
+    //  alert(durationinmin);
+    //alert(legs[0].start_address)
+    //  alert(JSON.stringify(legs));
+     
+      for (i = 0; i < legs.length; i++) {
+        var steps = legs[i].steps;
+        for (j = 0; j < steps.length; j++) {
+          var nextSegment = steps[j].path;
+          for (k = 0; k < nextSegment.length; k++) {
+            if ((steps[j].instructions.search('I-66 E')!=-1) && ((conditionid==3 || conditionid==5 )) ) {
+            																trafficpolyline.getPath().push(nextSegment[k]);
+            																tbounds.extend(nextSegment[k]);
+            																trafficflag=1;
+            															   }            
+            polyline.getPath().push(nextSegment[k]);
+            bounds.extend(nextSegment[k]);
+          }
+        }
+      }
+      polyline.setMap(map);
+      trafficpolyline.setMap(map);
+      if ( (conditionid==3 || conditionid==5 ) &&trafficflag )  
+      durationinmin=durationinmin+30;
+      $("#traveltime").text(durationinmin.toFixed(2) + ' min');
+      traveltime=durationinmin.toFixed(2);
+      $("#cost").text(cost.toFixed(2)+ ' $');
+      $("#budget").text((budget-cost).toFixed(2)+ ' $');
+     
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+} ;
+               
+        
+             
+       
+    /*
+       
+       function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,mywaypoints,travel_mode,rindex) 
+       {
+         
+         directionsService.route({
+         origin: pointA,
+         destination: pointB,
+         provideRouteAlternatives:true,
+         
+         
+      //   waypoints:mywaypoints,
          travelMode: travel_mode //google.maps.TravelMode.DRIVING
          }, function(response, status) {
               if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(response);
-              } /*else {
-              window.alert('Directions request failed due to ' + status);
-              }*/
-           });
-      }       
+               test1=response.routes[0].legs[0].steps[0].path[1];
+               test2=response.routes[1].legs[0].steps[0].path[1];
+            //    alert(JSON.stringify(pointA));
+           //     alert(JSON.stringify(response.routes[0].legs[0].steps[0].path[1]));
+                alert(pointA);
+                alert(pointB);
+              //  alert(response.routes[1].legs[0].steps.length);
+                if (response.routes.length==1)   {directionsDisplay.setDirections(response);
+                                    $("#routegrp").addClass('hidden');
+                }
+                if (response.routes.length>1) {
+                    $("#routegrp").removeClass('hidden');
+                    r1={
+                    map: map,
+                    directions: response,
+                    routeIndex: 0
+                    };
+                     r2={
+                    map: map,
+                    directions: response,
+                    routeIndex: 1
+                    };
+              
+                    
+               }
+                
+             }
+          }); 
+      }*/      
        
         
        $('#answerbtn').click(function() {
