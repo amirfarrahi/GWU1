@@ -11,12 +11,12 @@
 </script>
   </head>
   <body>
-            <button type="button" class="btn btn-primary" id="submit">submit</button>
+
 <div id="main">
-<div>what time does your work start?</div>
+
 
 </div>
-
+            <button type="button" class="btn btn-primary" id="submit">submit</button>
       
 
 
@@ -36,7 +36,7 @@
         var myObject = JSON.parse(uinfo);
 
          $.ajax({
-                   url: 'http://localhost:3000/questions',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/questions',
                    dataType: 'json',
                    type: 'GET',
                    async: false,
@@ -60,7 +60,7 @@
                   });
                   
                    $.ajax({
-                   url: 'http://localhost:3000/answers',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/answers',
                    dataType: 'json',
                    type: 'GET',
                    async: false,
@@ -87,11 +87,11 @@
                   
          $('#submit').click(function() {
    
-        /*    if ($('input[name=optradio]:checked').length!=13) 
+            if ($('input[name=optradio]:checked').length!=13) 
                 {
                   alert('please answer all questions');
                   return;                
-                };*/ 
+                };
                  
             var hr=0;
             var salaryin=$('input[name=optradio]:checked', '#q4').val();
@@ -102,7 +102,7 @@
             if ( salaryin==5) hr= 149000/2080;
             if ( salaryin>5 ) hr= 200000/2080;   
               $.ajax({
-                  url: 'http://localhost:3000/users',
+                  url: 'https://mighty-inlet-46722.herokuapp.com/users',
                      dataType: 'json',
 		               async : false,
                      type: 'PUT',

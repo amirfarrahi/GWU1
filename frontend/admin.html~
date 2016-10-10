@@ -35,7 +35,7 @@
         var myObject = JSON.parse(uinfo);
 
          $.ajax({
-                   url: 'http://localhost:3000/conditions',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/conditions',
                    dataType: 'json',
                    type: 'GET',
                    async: false,
@@ -64,7 +64,7 @@
             //  alert (scenario);
          
               $.ajax({
-                  url: 'http://localhost:3000/conditions/'+ scenario,
+                  url: 'https://mighty-inlet-46722.herokuapp.com/conditions/'+ scenario,
                      dataType: 'json',
 		               async : false,
                      type: 'PUT',
@@ -79,7 +79,7 @@
                     alert("fail");
           });       
        
-
+          window.location = 'main.html';
        });                  
                      
       });

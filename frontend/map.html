@@ -51,22 +51,32 @@
                    contentType: 'application/json; charset=utf-8'
                
                 }).done(function(data) {
- //alert(JSON.stringify(data.usersloc[0]));
-                    var userslocations=data.usersloc;
+                  
+                   var userslocations=data.usersloc;
+                    var umarker,ulat,ulon,uLatlng;
                   $.each(userslocations, function(index) {
-                       var lat=userslocations[index].location[0];
-                       var lon=userslocations[index].location[1];
-                       var desmyLatlng = new google.maps.LatLng(lat,lon);
-                       var desmarker = new google.maps.Marker({
-                       position: desmyLatlng,
-                       title:userslocations[index].name,
-                       icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + userslocations[index].name + '|FF0000|000000'
+                       ulat=userslocations[index].location[0];
+                       ulon=userslocations[index].location[1];
+                       uLatlng = new google.maps.LatLng(ulat,ulon);
+                     //  alert(userslocations[index].name);
+                      var  marker =  new google.maps.Marker({
+            					position: uLatlng,
+            					map: maploc,
+            					label:  userslocations[index].name //,
+
+            					//icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' +
+            				// userslocations[index].name + '|FF0000|000000'
                        });
-                       desmarker.setMap(map);
+                      // marker.setMap(map)
+                
+                
+                 
+
                   });
                 })
                   .fail(function(msg) {
-                  alert("failed");
+               alert(JSON.stringify(msg));
+                  
                              
                   });   
       });

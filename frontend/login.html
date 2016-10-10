@@ -52,7 +52,7 @@
   </div>
  
 </div>
-    <script src='js/jquery-3.0.0.min.js'></script>
+    <script src='js/jquery.min.js'></script>
 
 
         <script src="js/index.js"></script>
@@ -62,12 +62,12 @@
      	  $('#login').click( function () {
              if($('#lo-form')[0].checkValidity()){
                 $.ajax({
-                   url: 'http://mighty-inlet-46722.herokuapp.com/authenticate',
+                   url: 'http://localhost:3000/authenticate',
                    dataType: 'json',
-		   async : false,
-                   type: 'POST',
+		             type: 'POST',
                    contentType: 'application/json; charset=utf-8',
-                   data: JSON.stringify({ "email": $('#lo-email').val(), "password": $('#lo-pass').val() }) 
+                   data: JSON.stringify({ "email": $('#lo-email').val(), "password": $('#lo-pass').val() })//,
+             //      data: { "email": $('#lo-email').val(), "password": $('#lo-pass').val() } 
                 }).done(function(msg) {
                   
                   //   alert(msg.id);
@@ -93,9 +93,9 @@
               if($('#re-form')[0].checkValidity()){
                 
                 $.ajax({
-                   url: 'http://mighty-inlet-46722.herokuapp.com/users',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/users',
                    dataType: 'json',
-		   async : false,
+		             async : false,
                    type: 'POST',
                    contentType: 'application/json; charset=utf-8',
                    data: JSON.stringify({ "name":$('#username').val() ,"email": $('#email').val(), "password": $('#password').val(), 

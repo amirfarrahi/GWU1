@@ -9,7 +9,7 @@
 
     <!-- Le styles -->
 <link rel="stylesheet" href="css/bootstrap.min.css" 
-integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+>
      <link rel="stylesheet" href="css/style.css">
 <script>    if (sessionStorage.getItem('userinfo') == null) {
         window.location.replace("login.html");
@@ -36,42 +36,52 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
     
     
     
-<div class="col-md-3"><span class="label label-success">User Name:</span>
+<div class="col-md-3" data-toggle="tooltip" title="The user name associated with your account"><span class="label label-success" >User Name:</span>
 <span id="username" ></span>
 </div> 
-<div class="col-md-3"><span class="label label-default"> Condition:</span>  &nbsp;&nbsp;
-<span id="contxt" ><strong></strong></span>
-</div> 
-<div class="col-md-3"><span class="label label-default">Budget:</span>
-<span id="budget" ><strong></strong></span>
-</div> 
-<div class="col-md-3"><span class="label label-default">Cost:</span>
-<span id="cost" ><strong></strong></span>
-</div>
-    </div>
-        <div class="top-buffer row">
-<div class="col-md-3"><span class="label label-info">Origin:</span>
-  <div class="dropdown">
-    <button id="srcbtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select
-    <span class="caret"></span></button>
-    <ul id="srcmenu" class="dropdown-menu scrollable-menu" role="menu" >
-    </ul>
-    </div>
-</div> 
-<div class="col-md-3"><span class="label label-info">Destination:</span>
-  <div class="dropdown">
-    <button id="desbtn" class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown">Select
-    <span class="caret"></span></button>
-    <ul id="desmenu" class="dropdown-menu scrollable-menu" role="menu" >
-    </ul>
-    </div>
-</div> 
-<div class="col-md-3"><span class="label label-info">Travel Time:</span>
+<div class="col-md-3"><span class="label label-default hidden"> Condition:</span>
+<span id="contxt" class="hidden"><strong></strong></span>
+<span class="label label-info">Travel Time:</span>
 <span id="traveltime" ><strong></strong></span>
 </div> 
-<div class="col-md-3">
+<div class="col-md-3"><span class="label label-default">Distance:</span>
+<span id="distance" ><strong></strong></span>
+</div> 
+<div class="col-md-3" data-toggle="tooltip" title="The out-of-pocket monetary cost that you have spent in THIS trip"><span class="label label-default">Cost:</span>
+<span id="cost" ><strong></strong></span>
+</div>
 
-  <button id="showusers" type="button" class="btn btn-primary">players location</button>
+    </div>
+        <div class="top-buffer row">
+<div class="col-md-3" data-toggle="tooltip" title="The start node of your trip."><span class="label label-info">Origin:</span>
+ <span id="origin" ><strong></strong></span>
+
+</div> 
+<div class="col-md-3" data-toggle="tooltip" title="The end node of your trip."><span class="label label-info">Destination:</span>
+ <span id="destination" ><strong></strong></span>
+</div> 
+<div class="col-md-3" data-toggle="tooltip" title="The time you decide to begin your trip/The virtual time at the moment in the game.">
+<span id='dt_ct' class="label label-success"></span>
+ <select  id="worktime">
+  <option value="7:00">7:00 AM</option>
+  <option value="7:30">7:30 AM</option>
+  <option value="8:00">8:00 AM</option>
+  <option value="8:30">8:30 AM</option>
+  <option value="9:00">9:00 AM</option>
+  <option value="9:30">9:30 AM</option>
+  <option value="10:00">10:00 AM</option>
+  <option value="10:30">10:30 AM</option>
+  <option value="11:00">11:00 AM</option>
+  <option value="11:30 AM">11:30 AM</option>
+                  
+</select> 
+
+</div> 
+<div class="col-md-3" data-toggle="tooltip" title="The remaining monetary budget you have. Note that this budget goes with your account and you are going to perform a series of trips with it"><span class="label label-default">Budget:</span>
+<span id="budget" ><strong></strong></span>
+</div>
+<div class="col-md-3">
+  <button id="showusers" type="button" class="btn btn-primary hidden" data-toggle="tooltip" title="the location of other player(s) that are simultaneously in the game">players location</button>
 <div id='somediv'></div>
   <button id="qprompt" type="button" class="btn btn-primary hidden" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" data-whatever="@mdo">Open modal for @mdo</button>
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -81,12 +91,12 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 
 
           </button>
-          <h4 class="modal-title" id="QuestionLabel"></h4>
+          <h4 class="modal-title" id="QuestionLabel">what went wrong?</h4>
         </div>
         <div class="modal-body">
           <form>
              <div id="answergrp" class="form-group">
-
+             <textarea class='form-control' id='message-text'></textarea>          
 
             </div>
           </form>
@@ -94,6 +104,7 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
         <div class="modal-footer">
         <p id="prompterr" class="text-left"></p>
           <button id="answerbtn" type="button" class="btn btn-primary">Submit</button>
+          <button id="cancelbtn" type="button" class="btn btn-primary">Cancel</button>
         </div>
       </div>
     </div>
@@ -104,7 +115,7 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 
 </div>
 <div class="top-buffer row">
-<div  class="col-md-4">
+<div  class="col-md-4" data-toggle="tooltip" title="The transportation mode that you prefer/decide to use while performing your trip. There are optional routes (if available) under each corresponding travel mode." >
 <span class="label label-success">Travel Mode:</span>
 <div id="tmbtn" class="btn-group" role="group">
   <button data-tmid="1" id="car" type="button" class="btn btn-default">car</button>
@@ -115,7 +126,7 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 <div class="col-md-2">
 <button id="startbtn" class="btn btn-default" type="button" >Go!</button>
 </div>
-<div class="col-md-6">
+<div class="col-md-3" data-toggle="tooltip" title="The latest weather/incident information impacting your commute.">
 
 <span class="label label-warning">Traffic Info:</span>
 
@@ -124,25 +135,69 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 
 
 </div>
+<div class="col-md-3" data-toggle="tooltip" title="The amount of time that you have spent in THIS trip."><span class="label label-default">Time elapsed:</span>
+<span id="ttime" ><strong></strong></span>
+</div> 
+
 </div>
 <div class="top-buffer row">
 <div class="col-md-6">
-  <div id="routegrp" class="form-group hidden">
+  <div id="routegrp" class="form-group">
   </div>
 </div>
 <div class="col-md-6">
-<form id="myform" class="hidden">
-<span class="label label-success">Work Star Time:</span>
-<input type="text" id="worktime" placeholder="hh:mm:ss" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" >
-</form>
+
 </div>
 </div>
 <div class="top-buffer row">
-<div id="gmap" class="col-md-12 map"></div>
-<div id="animation" class="col-md-12 hidden"><img id="ride" class="center-block" src="" ></div>
+
+
+<nav class="navbar navbar-default"> <div class="container-fluid"> 
+ <div class="navbar-header"> <a id="hist" class="navbar-brand" href="#">History</a> </div> 
+ <div class="col-md-4"> </div>
+ <div class="navbar-header"> <a id="main" class="navbar-brand" href="#">Main</a> </div> 
+  <div class="col-md-4"> </div>
+ <div class="navbar-header" data-toggle="tooltip" title="Location of other players"> <a id="loc" class="navbar-brand" href="#">Players Loc</a> </div> 
+ </div> </nav>
+
+<div id="gmap" class="col-md-12 map">
+   <div class="msgErreur col-md-6">
+            <div>Errorwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww</div>
+        </div>
 </div>
 
 
+
+
+<div id="histtab" class="col-md-12"> 
+<div id="gmaphist" class="col-md-7 map"></div>
+<div  class="col-md-5">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>Cost</th>
+        <th>Travel Time</th>
+        <th>Distance</th>
+      </tr>
+    </thead>
+    <tbody id="histtable">
+    <tr></tr>
+        <tr></tr>
+            <tr></tr>
+                <tr></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+<div id="gmaploc" class="col-md-12 map"></div>
+<div id="animation" class="col-md-12 hidden"><img id="ride" class="center-block" src="" ></div>
+</div>
+<div class="row">
+<div class="col-md-12 text-center">
+<button type="button" class="btn btn-link" data-toggle="modal" data-target="#myModal">report a bug</button>
+</div>
+</div>
 
 
 
@@ -167,6 +222,8 @@ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkz
 var map;
 var hr=0;
 var worktime;
+var totalmilage=0;
+var ttime=0;
 var start;
 var polyline,trafficpolyline;
 var myLatlng;
@@ -188,6 +245,7 @@ var index=0;
 var nextnode;
 var r1,r2;
 var gtm=-1;
+var tmname="";
 var tmimagelink;
 var acclink='img/accident.jpg';
 var startnode,endnode,currnode;
@@ -198,22 +256,42 @@ var edgeaccind=-1;
 var temp;
 var delay=0;
 var trafficflag;
-
+var playsteps=0;
+var busflag=0;
 
       function initMap() {
         myLatlng = new google.maps.LatLng(38.9072, -77.0369);
         map = new google.maps.Map(document.getElementById('gmap'), {
           center: myLatlng,
-          zoom: 11
+          zoom: 11,
+          zoomControl: true
+        });
+         hmap = new google.maps.Map(document.getElementById('gmaphist'), {
+          center: myLatlng,
+          zoom: 11,
+          zoomControl: true
+        }); 
+        var uloclatloncntr=new google.maps.LatLng(38.8992646,  -77.1549962);
+        
+        maploc = new google.maps.Map(document.getElementById('gmaploc'), {
+          center: uloclatloncntr,
+          zoom: 11,
+          zoomControl: true
         });
         directionsService = new google.maps.DirectionsService;
+        directionsServicehist = new google.maps.DirectionsService;
         directionsDisplay = new google.maps.DirectionsRenderer();
         directionsDisplay1 = new google.maps.DirectionsRenderer();
         directionsDisplay2 = new google.maps.DirectionsRenderer();
+        directionsDisplayloc = new google.maps.DirectionsRenderer();
+        directionsDisplayhist = new google.maps.DirectionsRenderer();
+
         directionsDisplay1.setMap(map);
         directionsDisplay2.setMap(map);
+        directionsDisplayloc.setMap(maploc);
+        directionsDisplayhist.setMap(hmap);
 
-        
+       
       }
 
   
@@ -221,13 +299,16 @@ var trafficflag;
     $( document ).ready(function() {
 
   
-    $("#routegrp").append("<div class='radio-inline'><label><input id='r1' type='radio' name='optradio' value='0'>option 1</label></div>");
-    $("#routegrp").append("<div class='radio-inline'><label><input id='r2' type='radio' name='optradio' value='1'>option 2</label></div>");
-           
     $("#budget").text(budget+ ' $');
+    $("#dt_ct").text("Departure Time:");
     $("#trafficnews").text("no traffic news availible");
    // $("#traveltime").text(traveltime+ ' minutes');    
-    
+  //  $('#srcbtn').prop("disabled",true);
+  //Math.floor(Math.random() * 6) + 1  
+ // $('#srcmenu').val(1).change();
+   $("#srcmenu li").filter("[data-index=" + 1 + "]").trigger("click");
+ // document.getElementById("#srcmenu").selectedIndex = 2;
+    $('#desbtn').prop("disabled",true);
     $("#startbtn").prop("disabled",true);
     var uinfo=sessionStorage.getItem('userinfo');
     sessionStorage.setItem('userinfo', uinfo);
@@ -238,8 +319,12 @@ var trafficflag;
    //  $("#gmap").load("map.html"); 
   //  alert(JSON.stringify(uinfo));
    // alert(myObject.auth_token);
+   var sss=(Math.floor(Math.random() * 8) + 1).toString();
+   var eee=(Math.floor(Math.random()*(10-9+1)+9)).toString();
+
+
          $.ajax({
-                   url: 'http://localhost:3000/nodes',
+                   url: 'http://localhost:3000/nodes/'+ sss ,
                    dataType: 'json',
                    type: 'GET',
                    async: false,
@@ -248,19 +333,62 @@ var trafficflag;
                
                 }).done(function(data) {
 
-              $.each(data, function(index) {
-          var   elem="<li " + "data-name='" + data[index].name + "' data-lat='" + data[index].lat + "' data-lon='" +data[index].lon + "' role='presentation'><a href='#' role='menuitem' tabindex='-1'>"+ 
-         data[index].name+ "</a></li>";
-//alert(elem);
-         $('#desmenu').append(elem);
-         $('#srcmenu').append(elem);
+                      $("#origin").text(data.name);  
+                      if (srcmarker!=null) srcmarker.setMap(null);
 
-             });
+                      var lat=parseFloat(data.lat);
+          				 var lon=parseFloat(data.lon);
+
+
+          				 srcmyLatlng = new google.maps.LatLng(lat,lon);
+          				 start = srcmyLatlng;
+          				 srcmarker = new google.maps.Marker({
+          				 position: srcmyLatlng,
+          				 title:data.name,
+          				 icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + data.name + '|FF0000|000000'
+                      });
+                      srcmarker.setMap(map);  
+          
+                      startnode=data.name;
+                      currnode=startnode;
+     
                  })
                   .fail(function(msg) {
                   alert("failed");
                              
                   });
+                  
+         $.ajax({
+                   url: 'http://localhost:3000/nodes/'+eee,
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+
+                      $("#destination").text(data.name);
+                      if (desmarker!=null) desmarker.setMap(null);
+          
+                      var lat=parseFloat(data.lat);
+          				 var lon=parseFloat(data.lon);
+
+          				 desmyLatlng = new google.maps.LatLng(lat,lon);
+          				 desmarker = new google.maps.Marker({
+          				 position: desmyLatlng,
+          				 title:data.name,
+          				 icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + data.name + '|FF0000|000000'
+       
+          				 });
+          				 desmarker.setMap(map); 
+          				 endnode=data.name;  
+     
+                 })
+                  .fail(function(msg) {
+                  alert("failed");
+                             
+                 });
                   
          $.ajax({
                    url: 'http://localhost:3000/activeconditions',
@@ -273,7 +401,11 @@ var trafficflag;
                 }).done(function(data) {
                    $("#contxt").text(data[0].name);
                    conditionid=data[0].id;
-                   if (conditionid==5) $("#myform").removeClass('hidden');
+
+                   if (conditionid==2)     $("#trafficnews").text("inclement weather drive carefully");
+                //   if (conditionid==3)     $("#trafficnews").text("Accident on I-66 expect delays");
+                   if (conditionid==4)     $("#trafficnews").text("Inclement weather 50% on transit");
+                //   if (conditionid==5) $("#myform").removeClass('hidden');
                   
 
              
@@ -300,25 +432,99 @@ var trafficflag;
                   .fail(function(msg) {
                   alert("failed");
                              
-                  });   
+                  });  
+         
+         $("#gmaploc").addClass('hidden');
+        $("#histtab").addClass('hidden'); 
        
        $('#myModal').on('hidden.bs.modal', function () {
 
         $(this).removeData();
     //     alert("hi");
-})
+       });
+       
+       $('#hist').click(function() {
+         $("#gmap").addClass('hidden');
+         $("#gmaploc").addClass('hidden');
+        $("#histtab").removeClass('hidden');
+       });
+        $('#loc').click(function() {
+        
+            $("#gmap").addClass('hidden');
+            $("#histtab").addClass('hidden');
+            $("#gmaploc").removeClass('hidden');           
+              $.ajax({
+                   url: 'http://localhost:3000/listuserloc',
+                   dataType: 'json',
+                   type: 'GET',
+                   async: false,
+                   headers: { 'Authorization' : myObject.auth_token       },
+                   contentType: 'application/json; charset=utf-8'
+               
+                }).done(function(data) {
+                   // alert(JSON.stringify(data.usersloc));
+                    var userslocations=data.usersloc;
+                    var umarker,ulat,ulon,uLatlng;
+                  $.each(userslocations, function(index) {
+                       ulat=userslocations[index].location[0];
+                       ulon=userslocations[index].location[1];
+                       uLatlng = new google.maps.LatLng(ulat,ulon);
+                     //  alert(userslocations[index].name);
+                      var  marker =  new google.maps.Marker({
+            					position: uLatlng,
+            					map: maploc,
+            					label:  userslocations[index].name //,
+
+            					//icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' +
+            				// userslocations[index].name + '|FF0000|000000'
+                       });
+                      // marker.setMap(map)
+                
+                
+                 
+
+                  });
+                })
+                  .fail(function(msg) {
+               alert(JSON.stringify(msg));
+                  
+                             
+                  }); 
+           
+                    
+        
+        
+           
+       });
+       $('#main').click(function() {
+         $("#histtab").addClass('hidden');
+         $("#gmap").removeClass('hidden');
+         $("#gmaploc").addClass('hidden');
+       });
 
         $('#startbtn').click(function() {
              
 
       
-
+              playsteps=playsteps+1;
               $("#startbtn").prop("disabled",true);
               $("#gmap").addClass('hidden');
+              budget=(budget-cost).toFixed(2);
+              $("#budget").text(budget+ ' $');
+            
+              ttime=traveltime+ttime;
+           
+              $("#ttime").text(ttime.toFixed(2) +' min');
+              $("#histtab").addClass('hidden');
+              $("#gmaploc").addClass('hidden');
               $("#animation").removeClass('hidden');
               $('#ride').attr("src",tmimagelink);
               $("#routegrp").addClass('hidden');
                $("#tmbtn button").prop("disabled",true);
+               if (playsteps==1) $("#histtable").empty();
+               $('#histtable').append("<tr><td>"+ tmname +"</td><td>"+cost.toFixed(2) +" $</td><td>"
+               +totalmilage.toFixed(2)+" m</td><td>"+traveltime +" min</td></tr>");
+               
                if (conditionid==5 && trafficflag ) {
                   var sysdate=new Date()
                   var pieces = worktime.trim().split(':')
@@ -327,9 +533,10 @@ var trafficflag;
                   var timediffinmin=hhdiff+mindiff;
                //   alert (timediffinmin);
                   delay=timediffinmin-traveltime;
-                  if (delay<0) $("#trafficnews").text((delay*-1).toFixed(2) + ' min delay / loosing ' + (delay*-1/60*hr).toFixed(2)+'$');
-               
+                  if ((delay<0) && (playsteps>3)) $("#trafficnews").text((delay*-1).toFixed(2) + ' min delay / loosing ' + (delay*-1/60*hr).toFixed(2)+'$');
+                  
                };
+               if ((conditionid==3) && (playsteps>3)) $("#trafficnews").text("Accident on I-66 expect delays");
               setTimeout(revert, 5000);
  
             
@@ -452,7 +659,9 @@ var trafficflag;
              $("#animation").addClass('hidden');
              $("#routegrp").removeClass('hidden');
              $("#tmbtn button").prop("disabled",false);
+             calculateAndDisplayHRoute(directionsServicehist, directionsDisplayhist, start,temp,gtm,this.value,hmap);
              start=temp;
+             $("#car").click();
              if (start==desmyLatlng) {
               $('#ride').attr("src",'img/gameover.jpg');
                $("#gmap").addClass('hidden');
@@ -462,10 +671,10 @@ var trafficflag;
                $("#cost").text('');
                setTimeout(leave, 2000);
               }
-             
+        /*     
              if(polyline!= null)  polyline.setMap(null);
              if(trafficpolyline!= null)  trafficpolyline.setMap(null);
-            calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
+              calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
                $.ajax({
                   url: 'http://localhost:3000/updateuserloc',
                      dataType: 'json',
@@ -482,7 +691,7 @@ var trafficflag;
           .fail(function(msg) {
                     alert("fail");
           });  
-          
+          */
                      //          
           //   if (c==0) start=test1;
           //   if (c==1) start=test2;
@@ -547,13 +756,16 @@ var trafficflag;
             }*/
         }
          
-  
+       $("#cancelbtn").click(function() {
+         $('#myModal').modal('toggle');  
+       });       
+
          
        $("#tmbtn button").click(function() {
        
 
           if (($("#worktime").val().length==0) && conditionid==5 ) 
-          {alert('Enter your work start time');
+          {alert('Enter your departure time');
            return false;
           };
           if ((conditionid==5) && (!$("#worktime")[0].checkValidity())) {
@@ -566,30 +778,56 @@ var trafficflag;
 
           return false;
           }
+       //  $("#worktime").addClass('hidden');
+         $("#worktime").prop("disabled",true);
           worktime=$("#worktime").val();
+       //   alert(worktime);
           var b1 = document.getElementById("bike");
           var b2 = document.getElementById("car");
           var b3 = document.getElementById("pb");
           b1.style.background = "white";            
           b2.style.background = "white";            
           b3.style.background = "white"; 
-          $("#routegrp").removeClass('hidden');
+//          $("#routegrp").removeClass('hidden');
           document.getElementById(this.id).style.background="olive";           
           tm=this.getAttribute("data-tmid") ;  
 
            if (tm==1) { gtm=google.maps.DirectionsTravelMode.DRIVING;
                         tmimagelink='img/car.gif';
+                        tmname='car';
                         //$('#ride').attr("src",'img/car.gif');
            }
            if (tm==2) { gtm=google.maps.DirectionsTravelMode.BICYCLING;
            					//$('#ride').attr("src",'img/bike.jpg');
            					tmimagelink='img/bike.jpg';
-           					
+           					tmname='bike';
+           			
            }
            if (tm==3) { gtm=google.maps.DirectionsTravelMode.TRANSIT;
                         //$('#ride').attr("src",'img/bus.gif');
-                        tmimagelink='img/bus.gif';           
+                        tmimagelink='img/bus.gif';   
+                        tmname='Metro';        
            }
+           
+           if ( srcmyLatlng==-1 || desmyLatlng==-1 || gtm==-1) 
+          {          
+          alert('choose source, destination and travel mode');
+       //   $("#r1").attr('checked', false);
+        //  $("#r2").attr('checked', false);
+          return false;
+          };
+  //  alert(gtm);
+                      //            if(t1 != null)       t1.setMap(null);
+
+        if(polyline!= null)  polyline.setMap(null);
+        if(trafficpolyline!= null)  trafficpolyline.setMap(null);
+        calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm,0,map);
+    //    calculateAndDisplayHRoute(directionsServicehist, directionsDisplayhist, start,temp,gtm,this.value,hmap);
+
+                     //          
+
+
+                          $("#startbtn").prop("disabled",false);
         //   alert(startnode);
         //   alert (currnode);
        /*           $.ajax({
@@ -634,11 +872,8 @@ var trafficflag;
                           if (i==0)               start = new google.maps.LatLng(lat, lon);
                           if (i==msg.wp.length-1) end = new google.maps.LatLng(lat, lon);
                         } */
-                        var waypts=[];
-                        var end;
-                        desmyLatlng;
-                        
-                        end =desmyLatlng;
+
+                
                     //    start = srcmyLatlng;
                  //      directionsDisplay1.setDirections({routes: []});
                 //       calculateAndDisplayRoute(directionsService,directionsDisplay1,start,end,waypts,gtm,1);
@@ -663,12 +898,16 @@ var trafficflag;
           $("#r2").attr('checked', false);
           return false;
           }
-  //  alert(gtm);
+ //   alert(this.value);
                       //            if(t1 != null)       t1.setMap(null);
-        if(polyline!= null)  polyline.setMap(null);
+       if(polyline!= null)  polyline.setMap(null);
         if(trafficpolyline!= null)  trafficpolyline.setMap(null);
-   // map.removeOverlay(marker);
-        calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm);
+
+       calculateAndDisplayRoute(directionsService,directionsDisplay1,start,desmyLatlng,gtm,this.value,map);
+
+
+               
+       
                      //          
 
 
@@ -694,171 +933,272 @@ var trafficflag;
                  //   }
         
                 
-        });  
+        }); 
+         
         
+        function uniqBy(a, key) {
+    var seen = {};
+    return a.filter(function(item) {
+        var k = key(item);
+        return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+    })
+}
         
-        
-         function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,travel_mode) 
+      
+      
+         function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,travel_mode,routeindex,imap) 
        {
          $("#traveltime").text('');
+                 $("#routegrp" ).empty();
        //  $("#trafficnews").text('');
          $("#cost").text(''); 
-         $("#budget").text(budget+ ' $');        
+      //   $("#budget").text(budget+ ' $');        
          trafficflag=0;
-         directionsService.route({
+         var dirseroption={
          origin: pointA,
          destination: pointB,
          provideRouteAlternatives:true,
          travelMode: travel_mode //google.maps.TravelMode.DRIVING
-         }, function(response, status) {
+         };
+         
+         if (travel_mode==google.maps.DirectionsTravelMode.TRANSIT) {
+            dirseroption={
+               origin: pointA,
+               destination: pointB,
+               travelMode: 'TRANSIT',
+               transitOptions:{
+                 modes: ['SUBWAY']  ,
+                 routingPreference: 'LESS_WALKING'
+               },
+               provideRouteAlternatives:true
+            };
+
+          }; 
+         directionsService.route(dirseroption, function(response, status) {
            if (status === google.maps.DirectionsStatus.OK) {
             polyline = new google.maps.Polyline({
-           path: [],
-           strokeColor: '#0000FF',
-           strokeWeight: 3
-       });
+           					path: [],
+           					strokeColor: '#0000FF',
+           					strokeWeight: 3
+           });
+           
            trafficpolyline = new google.maps.Polyline({
-           path: [],
-           strokeColor: '#FF0000',
-           strokeWeight: 3
-       });       
-       
-       var c=$('input[name=optradio]:checked', '#routegrp').val();
-       var myRoute;
-       if ((response.routes.length==1) && (c==1))     $("#startbtn").prop("disabled",true);
-       else  $("#startbtn").prop("disabled",false);
-       if (response.routes.length>1) myRoute= response.routes[c].legs[0];
-       else myRoute= response.routes[0].legs[0];
-       if (myRoute.steps.length>1)
-       temp=myRoute.steps[1].start_point;
-       else temp=pointB;
-       
-    //   alert(temp);
-  
-                    
-      var bounds = new google.maps.LatLngBounds();
-      var tbounds = new google.maps.LatLngBounds();
-       var legs;
+           					path: [],
+           					strokeColor: '#FF0000',
+           					strokeWeight: 3
+           });    
+           var roadresult=response.routes;
+           var tmpr=[];
+           var qqq;
+           if (travel_mode==google.maps.DirectionsTravelMode.TRANSIT) {
+   /*hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh*/ 
+           ropt=roadresult.length
 
+          for (qqq=0;qqq<ropt;qqq++) 
+             tmpr.push(roadresult[qqq]);
+       
 
-      if (response.routes.length>1)      legs= response.routes[c].legs;
-      else legs= response.routes[0].legs;
-      var totalmilage=parseFloat(response.routes[c].legs[0].distance.text);
-      var durationinmin=response.routes[c].legs[0].duration.value/60;
-      cost=totalmilage*0.16 +14;
-      if (conditionid==4) cost=cost*0.5;
-      if (conditionid==2 || conditionid==4 ) durationinmin=durationinmin+totalmilage;
-    //  alert(durationinmin);
-    //alert(legs[0].start_address)
-    //  alert(JSON.stringify(legs));
-     
-      for (i = 0; i < legs.length; i++) {
-        var steps = legs[i].steps;
-        for (j = 0; j < steps.length; j++) {
-          var nextSegment = steps[j].path;
-          for (k = 0; k < nextSegment.length; k++) {
-            if ((steps[j].instructions.search('I-66 E')!=-1) && ((conditionid==3 || conditionid==5 )) ) {
+        var tmpindex=[];
+        var li1,li2;
+       for (li1=0;li1<ropt;li1++) 
+        // for (li2=0;li2<roadresult[0].legs[0].steps.length;li2++)
+          if (JSON.stringify(tmpr[li1].legs[0]).indexOf('BUS')!=-1) 
+           {
+            tmpindex.push(li1);
+           // break;          
+           }
+         //  alert(JSON.stringify(tmpr.length));
+           for (var i = tmpindex.length -1; i >= 0; i--)
+             tmpr.splice(tmpindex[i],1);
+        //     alert(tmpr.length);
+             roadresult=[];
+             if (tmpr.length>0) roadresult.push(tmpr[0]);
+             }
+           //  alert(tmpindex.length);
+       /*hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh*/ 
+         //   alert(JSON.stringify(roadresult)); 
+    //      window.open('about:blank').document.body.innerText += JSON.stringify(roadresult);
+            if (roadresult.length==0)      $("#startbtn").prop("disabled",true);   
+            if (roadresult.length<1) 
+				{ $("#budget").text(budget.toFixed(2)+ ' $');
+              $("#ttime").text(ttime.toFixed(2) +' min');
+              $("#distance").text("");
+                 
+            return;
+            } 
+            var ropt=roadresult.length;
+            if (ropt>3)  ropt=3;
+
+            var li;
+            for (li=0;li<ropt;li++) 
+              $("#routegrp").append("<div class='radio-inline'><label><input id='r" + li + "' type='radio' name='optradio' value='" + li+ "'>route " +(li+1)+"</label></div>");
+            $("#r" + routeindex).prop("checked", true);
+            var myRoute;
+            if (roadresult.length>1) myRoute= roadresult[routeindex].legs[0];
+            else myRoute= roadresult[0].legs[0];
+         //   console.log(JSON.stringify(myRoute.steps));
+            if (myRoute.steps.length>1) temp=myRoute.steps[1].start_point; else temp=pointB;
+            var bounds = new google.maps.LatLngBounds();
+            var tbounds = new google.maps.LatLngBounds();
+            var legs;
+        //    alert(roadresult.length);
+
+            if (roadresult.length>1)      legs= roadresult[routeindex].legs;
+            else legs= roadresult[0].legs;
+            totalmilage=parseFloat(roadresult[routeindex].legs[0].distance.text);
+            $("#distance").text(totalmilage+ ' miles');        
+            var durationinmin=roadresult[routeindex].legs[0].duration.value/60;
+            cost=totalmilage*0.16 +14;
+            if (conditionid==4) cost=cost*0.5;
+            if (conditionid==2 || conditionid==4 ) durationinmin=durationinmin+totalmilage;
+            for (i = 0; i < legs.length; i++) {
+              var steps = legs[i].steps;
+              for (j = 0; j < steps.length; j++) {
+                var nextSegment = steps[j].path;
+                for (k = 0; k < nextSegment.length; k++) {
+                if ((steps[j].instructions.search('I-66 E')!=-1) && (playsteps>3) &&((conditionid==3 || conditionid==5 )) ) {
             																trafficpolyline.getPath().push(nextSegment[k]);
             																tbounds.extend(nextSegment[k]);
             																trafficflag=1;
             															   }            
-            polyline.getPath().push(nextSegment[k]);
-            bounds.extend(nextSegment[k]);
-          }
-        }
-      }
-      polyline.setMap(map);
-      trafficpolyline.setMap(map);
-      if ( (conditionid==3 || conditionid==5 ) &&trafficflag )  
-      durationinmin=durationinmin+30;
-      $("#traveltime").text(durationinmin.toFixed(2) + ' min');
-      traveltime=durationinmin.toFixed(2);
-      $("#cost").text(cost.toFixed(2)+ ' $');
-      $("#budget").text((budget-cost).toFixed(2)+ ' $');
+                polyline.getPath().push(nextSegment[k]);
+                bounds.extend(nextSegment[k]);
+               }
+             }
+            }
+            polyline.setMap(imap);
+
+
+            trafficpolyline.setMap(imap);
+            if ( (conditionid==3 || conditionid==5 ) &&trafficflag )  
+            durationinmin=durationinmin+30;
+            $("#traveltime").text(durationinmin.toFixed(2) + ' min');
+            traveltime=durationinmin;
+            $("#cost").text(cost.toFixed(2)+ ' $');
+            $("#budget").text((budget-cost).toFixed(2)+ ' $');
+           
+            $("#ttime").text((traveltime+ttime).toFixed(2) +' min');
      
+    
+    
     } else {
-      window.alert('Directions request failed due to ' + status);
+      window.alert('No route is available');
+      $("#startbtn").prop("disabled",true);
+       $("#budget").text(budget.toFixed(2)+ ' $');
+              $("#ttime").text(ttime.toFixed(2) +' min');
+              $("#distance").text("");
     }
   });
 } ;
                
-        
+   /***************************************************/     
              
        
-    /*
-       
-       function calculateAndDisplayRoute(directionsService, directionsDisplay, pointA, pointB,mywaypoints,travel_mode,rindex) 
+      function calculateAndDisplayHRoute(directionsService, directionsDisplay, pointA, pointB,travel_mode,routeindex,imap) 
        {
          
-         directionsService.route({
+         var dirseroption={
          origin: pointA,
          destination: pointB,
          provideRouteAlternatives:true,
-         
-         
-      //   waypoints:mywaypoints,
          travelMode: travel_mode //google.maps.TravelMode.DRIVING
-         }, function(response, status) {
-              if (status == google.maps.DirectionsStatus.OK) {
-               test1=response.routes[0].legs[0].steps[0].path[1];
-               test2=response.routes[1].legs[0].steps[0].path[1];
-            //    alert(JSON.stringify(pointA));
-           //     alert(JSON.stringify(response.routes[0].legs[0].steps[0].path[1]));
-                alert(pointA);
-                alert(pointB);
-              //  alert(response.routes[1].legs[0].steps.length);
-                if (response.routes.length==1)   {directionsDisplay.setDirections(response);
-                                    $("#routegrp").addClass('hidden');
-                }
-                if (response.routes.length>1) {
-                    $("#routegrp").removeClass('hidden');
-                    r1={
-                    map: map,
-                    directions: response,
-                    routeIndex: 0
-                    };
-                     r2={
-                    map: map,
-                    directions: response,
-                    routeIndex: 1
-                    };
-              
-                    
-               }
-                
+         };
+         
+         hpolyline = new google.maps.Polyline({
+           					path: [],
+           					strokeColor: '#0000FF',
+           					strokeWeight: 3
+           });
+         
+         if (travel_mode==google.maps.DirectionsTravelMode.TRANSIT) {
+            dirseroption={
+               origin: pointA,
+               destination: pointB,
+               travelMode: 'TRANSIT',
+               transitOptions:{
+                 modes: ['SUBWAY']  ,
+                 routingPreference: 'LESS_WALKING'
+               },
+               provideRouteAlternatives:true
+            };
+
+          }; 
+    
+         directionsService.route(dirseroption, function(response, status) {
+           if (status === google.maps.DirectionsStatus.OK) {
+               
+           var roadresult=response.routes;
+           var tmpr=[];
+           var qqq;
+           if (travel_mode==google.maps.DirectionsTravelMode.TRANSIT) {
+           ropt=roadresult.length
+
+          for (qqq=0;qqq<ropt;qqq++) 
+             tmpr.push(roadresult[qqq]);
+          var tmpindex=[];
+        var li1,li2;
+       for (li1=0;li1<ropt;li1++) 
+          if (JSON.stringify(tmpr[li1].legs[0]).indexOf('BUS')!=-1) 
+           {
+            tmpindex.push(li1);
+           }
+           for (var i = tmpindex.length -1; i >= 0; i--)
+             tmpr.splice(tmpindex[i],1);
+             roadresult=[];
+             if (tmpr.length>0) roadresult.push(tmpr[0]);
              }
-          }); 
-      }*/      
+           
+            var bounds = new google.maps.LatLngBounds();
+            var tbounds = new google.maps.LatLngBounds();
+            var legs;
+            if (roadresult.length>1)      legs= roadresult[routeindex].legs;
+            else legs= roadresult[0].legs;
+            for (i = 0; i < legs.length; i++) {
+              var steps = legs[i].steps;
+              for (j = 0; j < steps.length; j++) {
+                var nextSegment = steps[j].path;
+                for (k = 0; k < nextSegment.length; k++) {
+                
+                hpolyline.getPath().push(nextSegment[k]);
+                bounds.extend(nextSegment[k]);
+               }
+             }
+            }
+            hpolyline.setMap(imap);           
+           
+          } 
+  });
+} ;
+          
        
+       /*************************************************/
         
        $('#answerbtn').click(function() {
-        if ( antype=="M") { antext=""; 
-                              anid=$('input[name=optradio]:checked', '#answergrp').val();
-                              if ( typeof anid == 'undefined' ) 
-                              anid=-1;         
-          }
-          if ( antype=="T") { anid=-1; antext=$("#message-text").val().trim();}
-          if (anid==-1 && antext=="") {$("#prompterr").text("please answer");
+           
+       
+          antext=$("#message-text").val().trim();
+          if (antext=="") {
+            $("#prompterr").text("please explain the bug in details");
             return;          
           }
-          else {$('#myModal').modal('toggle');}  
-              $.ajax({
-                   url: 'http://localhost:3000/userfeeds',
+          else {$('#myModal').modal('toggle');  
+             $.ajax({
+                   url: 'http://localhost:3000/bugs',
                    dataType: 'json',
 		             async : false,
                    type: 'POST',
                    contentType: 'application/json; charset=utf-8',
-                   data: JSON.stringify({ "game_id": gameid, "question_id": qid,"answer_id":anid ,"usert":antext}),
+                   data: JSON.stringify({ "gameid": gameid, "bugdetails":antext}),
                    headers: { 'Authorization' : myObject.auth_token       } 
           }).done(function(msg) {
-                 //   alert(JSON.stringify(msg));
+                  // alert(JSON.stringify(msg));
                    
     		 })
           .fail(function(msg) {
                     alert(JSON.stringify(msg));
           });
       
-
+              }
       });
         
         
