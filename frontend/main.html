@@ -8,8 +8,8 @@
     <meta name="author" content="amir farrahi" >
 
     <!-- Le styles -->
-<link rel="stylesheet" href="css/bootstrap.min.css" 
->
+<link rel="stylesheet" href="css/bootstrap.min.css" >
+
      <link rel="stylesheet" href="css/style.css">
 <script>    if (sessionStorage.getItem('userinfo') == null) {
         window.location.replace("login.html");
@@ -41,6 +41,8 @@
 </div> 
 <div class="col-md-3"><span class="label label-default hidden"> Condition:</span>
 <span id="contxt" class="hidden"><strong></strong></span>
+<button id="iwo" class="hidden"></button>
+<button id="iwc" class="hidden"></button>
 <span class="label label-info">Travel Time:</span>
 <span id="traveltime" ><strong></strong></span>
 </div> 
@@ -64,16 +66,26 @@
 <span id='dt_ct' class="label label-success"></span>
  <select  id="worktime">
   <option value="7:00">7:00 AM</option>
-  <option value="7:30">7:30 AM</option>
+  <option value="7:15">7:15 AM</option>
+  <option value="7:30">7:30 AM</option>    
+  <option value="7:45">7:45 AM</option>
   <option value="8:00">8:00 AM</option>
+  <option value="8:15">8:15 AM</option>
   <option value="8:30">8:30 AM</option>
+  <option value="8:45">8:45 AM</option>
   <option value="9:00">9:00 AM</option>
+  <option value="9:15">9:15 AM</option>
   <option value="9:30">9:30 AM</option>
+  <option value="9:45">9:45 AM</option>
   <option value="10:00">10:00 AM</option>
+  <option value="10:15">10:15 AM</option>
   <option value="10:30">10:30 AM</option>
+  <option value="10:45">10:45 AM</option>
   <option value="11:00">11:00 AM</option>
-  <option value="11:30 AM">11:30 AM</option>
-                  
+  <option value="11:15">11:15 AM</option>
+  <option value="11:30">11:30 AM</option>
+  <option value="11:45">11:45 AM</option>
+  <option value="12:00">12:00 AM</option>                  
 </select> 
 
 </div> 
@@ -161,18 +173,18 @@
  </div> </nav>
 
 <div id="gmap" class="col-md-12 map">
-   <div class="msgErreur col-md-6">
-            <div>Errorwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww</div>
-        </div>
 </div>
 
+       
+        
+    
 
 
 
 <div id="histtab" class="col-md-12"> 
 <div id="gmaphist" class="col-md-7 map"></div>
 <div  class="col-md-5">
-  <table class="table">
+  <table class="table table-stripe">
     <thead>
       <tr>
         <th>Mode</th>
@@ -302,26 +314,17 @@ var busflag=0;
     $("#budget").text(budget+ ' $');
     $("#dt_ct").text("Departure Time:");
     $("#trafficnews").text("no traffic news availible");
-   // $("#traveltime").text(traveltime+ ' minutes');    
-  //  $('#srcbtn').prop("disabled",true);
-  //Math.floor(Math.random() * 6) + 1  
- // $('#srcmenu').val(1).change();
-   $("#srcmenu li").filter("[data-index=" + 1 + "]").trigger("click");
- // document.getElementById("#srcmenu").selectedIndex = 2;
+ 
+
     $('#desbtn').prop("disabled",true);
     $("#startbtn").prop("disabled",true);
     var uinfo=sessionStorage.getItem('userinfo');
     sessionStorage.setItem('userinfo', uinfo);
     var myObject = JSON.parse(uinfo);
      $("#username").text(myObject.name);
-    // alert(myObject.hrrate);
-     
-   //  $("#gmap").load("map.html"); 
-  //  alert(JSON.stringify(uinfo));
-   // alert(myObject.auth_token);
    var sss=(Math.floor(Math.random() * 8) + 1).toString();
    var eee=(Math.floor(Math.random()*(10-9+1)+9)).toString();
-
+   var infowindow;
 
          $.ajax({
                    url: 'http://localhost:3000/nodes/'+ sss ,
@@ -436,7 +439,7 @@ var busflag=0;
          
          $("#gmaploc").addClass('hidden');
         $("#histtab").addClass('hidden'); 
-       
+      
        $('#myModal').on('hidden.bs.modal', function () {
 
         $(this).removeData();
@@ -444,12 +447,14 @@ var busflag=0;
        });
        
        $('#hist').click(function() {
+
          $("#gmap").addClass('hidden');
          $("#gmaploc").addClass('hidden');
         $("#histtab").removeClass('hidden');
        });
         $('#loc').click(function() {
         
+
             $("#gmap").addClass('hidden');
             $("#histtab").addClass('hidden');
             $("#gmaploc").removeClass('hidden');           
@@ -499,14 +504,38 @@ var busflag=0;
        $('#main').click(function() {
          $("#histtab").addClass('hidden');
          $("#gmap").removeClass('hidden');
+
          $("#gmaploc").addClass('hidden');
        });
+
+
+
+/*************************/
+       $('#iwo').click(function() {
+
+         var contentString = '<div id="content">'+
+            '<table class="table table-striped">'+'<tr><th>Mode</th><th>Mile</th><th>Cost</th><th>Travel Time</th></tr>'+
+            '<tr><td>Car</td><td>50</td><td>50 $</td><td>50 min</td></tr>'+
+            '<tr><td>Bike</td><td>50</td><td>0 $</td><td>94 min</td></tr>'+     
+            '<tr><td>Metro</td><td>50</td><td>5 $</td><td>67 min</td></tr>'+       
+            '</table></div>';
+        
+         var    iwlatlng = new google.maps.LatLng(38.919652, -76.930737);
+          infowindow = new google.maps.InfoWindow({
+          content: contentString,
+          position:iwlatlng
+          });  
+         infowindow.open(map);
+      //   alert('yes');
+          });
+/**************************/
 
         $('#startbtn').click(function() {
              
 
       
               playsteps=playsteps+1;
+              infowindow.close();
               $("#startbtn").prop("disabled",true);
               $("#gmap").addClass('hidden');
               budget=(budget-cost).toFixed(2);
@@ -791,7 +820,7 @@ var busflag=0;
 //          $("#routegrp").removeClass('hidden');
           document.getElementById(this.id).style.background="olive";           
           tm=this.getAttribute("data-tmid") ;  
-
+  $( "#iwo" ).trigger( "click" );
            if (tm==1) { gtm=google.maps.DirectionsTravelMode.DRIVING;
                         tmimagelink='img/car.gif';
                         tmname='car';
@@ -1074,6 +1103,8 @@ var busflag=0;
             durationinmin=durationinmin+30;
             $("#traveltime").text(durationinmin.toFixed(2) + ' min');
             traveltime=durationinmin;
+            if (gtm==2) cost=0;
+            if (gtm==3) cost=5;
             $("#cost").text(cost.toFixed(2)+ ' $');
             $("#budget").text((budget-cost).toFixed(2)+ ' $');
            

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <title>Info windows</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" >
     <style>
       html, body {
         height: 100%;
@@ -11,77 +12,72 @@
         padding: 0;
       }
       #map {
-        height: 100%;
+        height: 50%;
       }
     </style>
-<script>    if (sessionStorage.getItem('userinfo') == null) {
-        window.location.replace("login.html");
-       };
-</script>
   </head>
   <body>
     <div id="map"></div>
-    <div id="capture"></div>
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
-    async defer></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/markerwithlabel.js"></script>
-
+    <button id='hist'>test</button>
+        <button id='hist1'>test1</button>
+<script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
     <script>
-      var map;
+
+      // This example displays a marker at the center of Australia.
+      // When the user clicks the marker, an info window opens.
+
+var map;
+
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 38.8992646, lng: -77.1549962},
-          zoom: 11
+        var myLatlng = new google.maps.LatLng(38.9072, -77.0369);
+         map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 11,
+          center: myLatlng
         });
-      }
-      
-      $(document).ready(function() {
-      
-        var uinfo=sessionStorage.getItem('userinfo');
-        var myObject = JSON.parse(uinfo);
 
-         $.ajax({
-                   url: 'http://localhost:3000/listuserloc',
-                   dataType: 'json',
-                   type: 'GET',
-                   async: false,
-                   headers: { 'Authorization' : myObject.auth_token       },
-                   contentType: 'application/json; charset=utf-8'
-               
-                }).done(function(data) {
-                  
-                   var userslocations=data.usersloc;
-                    var umarker,ulat,ulon,uLatlng;
-                  $.each(userslocations, function(index) {
-                       ulat=userslocations[index].location[0];
-                       ulon=userslocations[index].location[1];
-                       uLatlng = new google.maps.LatLng(ulat,ulon);
-                     //  alert(userslocations[index].name);
-                      var  marker =  new google.maps.Marker({
-            					position: uLatlng,
-            					map: maploc,
-            					label:  userslocations[index].name //,
-
-            					//icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' +
-            				// userslocations[index].name + '|FF0000|000000'
-                       });
-                      // marker.setMap(map)
-                
-                
-                 
-
-                  });
-                })
-                  .fail(function(msg) {
-               alert(JSON.stringify(msg));
-                  
-                             
-                  });   
-      });
-    </script>
    
+
+}
     
+    
+  
+      
+          $( document ).ready(function() {
+           
+var infowindow;
+
+          
+          $('#hist').click(function() {
+
+var contentString = '<div id="content">'+
+            '<table class="table table-striped">'+'<tr><th>Mode</th><th>Mile</th><th>Cost</th><th>Travel Time</th></tr>'+
+            '<tr><td>Car</td><td>50</td><td>50 $</td><td>50 min</td></tr>'+
+            '<tr><td>Bike</td><td>50</td><td>0 $</td><td>94 min</td></tr>'+     
+            '<tr><td>Metro</td><td>50</td><td>5 $</td><td>67 min</td></tr>'+       
+            '</table></div>';
+        
+var    iwlatlng = new google.maps.LatLng(38.919652, -76.930737);
+          infowindow = new google.maps.InfoWindow({
+          content: contentString,
+          position:iwlatlng
+        });  
+       infowindow.open(map);
+           
+         
+          
+       
+
+          });
+          
+      $('#hist1').click(function() {
+infowindow.close();
+          });          
+          
+          });
+    </script>
+    
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
+    async defer></script>
   </body>
 </html>
