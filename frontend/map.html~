@@ -28,6 +28,7 @@
       // When the user clicks the marker, an info window opens.
 
 var map;
+var cnt=[];
 
       function initMap() {
         var myLatlng = new google.maps.LatLng(38.9072, -77.0369);
@@ -35,44 +36,89 @@ var map;
           zoom: 11,
           center: myLatlng
         });
-
-   
-
+        directionsService = new google.maps.DirectionsService;
 }
     
     
   
-      
+   function calculateAndDisplayRoute1(directionsService, pointA, pointB,travel_mode,callbackfunc) 
+       {
+       
+         var ee;
+         var i;
+       
+         var dirseroption={
+         origin: pointA,
+         destination: pointB,
+         provideRouteAlternatives:true,
+         travelMode: travel_mode //google.maps.TravelMode.DRIVING
+     
+         };
+         
+         if (travel_mode==google.maps.DirectionsTravelMode.TRANSIT) {
+            dirseroption={
+               origin: pointA,
+               destination: pointB,
+               travelMode: 'TRANSIT',
+               transitOptions:{
+                 modes: ['SUBWAY']  
+               },
+               provideRouteAlternatives:true
+            };
+        }; 
+          
+         directionsService.route(dirseroption, function(response, status) {
+         
+           if (status === google.maps.DirectionsStatus.OK) {
+           ee=ee+'<tr><td>Car</td><td>'+'</td><td>'+' $</td><td>' + ' min</td></tr>'+
+         '<tr><td>Bike</td><td>'+'</td><td>'+' $</td><td>' + ' min</td></tr>'+
+         '<tr><td>Metro</td><td>'+'</td><td>'+' $</td><td>' + ' min</td></tr>';
+         cnt.push(ee);
+        callbackfunc(cnt);
+   } 
+
+ });
+ 
+
+ }
           $( document ).ready(function() {
            
-
+var infowindow;
 
           
-          $('#hist').click(function() {
+         $('#iwo').click(function() {
 
-var contentString = '<div id="content">'+
+         var contentString = '<div id="content">'+
             '<table class="table table-striped">'+'<tr><th>Mode</th><th>Mile</th><th>Cost</th><th>Travel Time</th></tr>'+
             '<tr><td>Car</td><td>50</td><td>50 $</td><td>50 min</td></tr>'+
             '<tr><td>Bike</td><td>50</td><td>0 $</td><td>94 min</td></tr>'+     
             '<tr><td>Metro</td><td>50</td><td>5 $</td><td>67 min</td></tr>'+       
             '</table></div>';
         
-var    iwlatlng = new google.maps.LatLng(38.919652, -76.930737);
-         var infowindow = new google.maps.InfoWindow({
+         var    iwlatlng = new google.maps.LatLng(38.919652, -76.930737);
+          infowindow = new google.maps.InfoWindow({
           content: contentString,
           position:iwlatlng
-        });  
-       infowindow.open(map);
-           
-         
-          
-       
-
+          });  
+         infowindow.open(map);
           });
           
+         
+  //tzOffset = (now.getTimezoneOffset() + 60) * 60e3
+ // hhmm = departure.split(':')
+ // time = new Date
+ // time.setHours   hhmm[0]
+ // time.setMinutes hhmm[1]
+ // ms = time.getTime() - tzOffset
+ // ms += 24 * 60 * 60e3  if ms < now.getTime()
+ // departureTime = new Date ms
+          
       $('#hist1').click(function() {
-infowindow.close();
-          });          
+var d = new Date();
+d.setHours(15); 
+alert(d);
+          
+          });
           
           });
     </script>

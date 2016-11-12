@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Question 1</title>
+    <title>Survey Part 1</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
  
 <script>    if (sessionStorage.getItem('userinfo') == null) {
         window.location.replace("login.html");
@@ -12,19 +13,21 @@
   </head>
   <body>
 
-<div id="main">
+<div id="main" class="col-md-12">
+
 
 
 </div>
+<div class="col-md-12">           
             <button type="button" class="btn btn-primary" id="submit">submit</button>
       
-
+</div>
 
      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVHCSIgYfsYUdCjpevjf00e0RsOyAAvDY&callback=initMap"
     async defer></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/markerwithlabel.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+ crossorigin="anonymous"></script>
 
     <script>
       var scenario=-1;
@@ -49,8 +52,8 @@
                   $.each(data, function(index) {
                   //  alert(data[index].id);
                     if (data[index].id<=13)
-                    $("#main").append("<form  id='q"+data[index].id + "'>" + 
-                    data[index].id + "-" + data[index].name +"</form>");
+                    $("#main").append("<form id='q"+data[index].id + "'><h3><span class='label label-info'>" + 
+                    data[index].id + "-" + data[index].name +"</span></h3></form>");
                    
                   });
                 })
@@ -75,8 +78,8 @@
                     if (data[index].question_id<=13)
                     $("#q"+data[index].question_id).append("<div id='"+ data[index].question_id +
                     "_" + data[index].answer_id + "' " +                    
-                     "class='radio'><label><input required type='radio' name='optradio' value='" + data[index].answer_id+ "'>" + 
-                    data[index].answer + "</label></div>");
+                     "class='radio'><h1><label><input  required type='radio' name='optradio' value='" + data[index].answer_id+ "'>" + 
+                    data[index].answer + "</label></h1></div>");
                   });
                 })
                   .fail(function(msg) {

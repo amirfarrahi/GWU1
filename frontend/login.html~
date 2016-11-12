@@ -62,7 +62,7 @@
      	  $('#login').click( function () {
              if($('#lo-form')[0].checkValidity()){
                 $.ajax({
-                   url: 'https://localhost:3000/authenticate',
+                   url: 'https://mighty-inlet-46722.herokuapp.com/authenticate',
                    dataType: 'json',
 		             type: 'POST',
                    contentType: 'application/json; charset=utf-8',
