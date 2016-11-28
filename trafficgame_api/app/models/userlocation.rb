@@ -1,2 +1,0 @@
-class Userlocation < ApplicationRecord
-end
